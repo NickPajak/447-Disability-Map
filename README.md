@@ -2,6 +2,9 @@
  
 repo structure updated 10/07  
 
+SOME REFERENCE: https://tomickigrzegorz.github.io/react-leaflet-examples/#/coordinates-after-clicking-on-the-map
+
+https://ucdavisdatalab.github.io/workshop_web_maps/add-a-popup.html
 
 dependencies:  
 will need to install npm for this to work.  

@@ -70,9 +70,9 @@ export default function HelpButton() {
 
 
   const toggleDarkMode = () => {
-    const newDarkMode = !darkMode;
-    setDarkMode(newDarkMode);
+    setDarkMode = !darkMode;
     document.body.classList.toggle('dark-mode');
+    
   };
 
   const toggleLargeFont = () => {
@@ -111,7 +111,7 @@ export default function HelpButton() {
             Light/Dark Mode
           </MenuItem>
 
-            <MenuItem  onClick={() => {document.body.classList.toggle('large-font');}}> 
+            <MenuItem  onClick={(toggleDarkMode) => {document.body.classList.toggle('large-font');}}>
             Toggle Large Font
             </MenuItem>
             <MenuItem  onClick={() => {document.body.classList.toggle('high-contrast');}}>
