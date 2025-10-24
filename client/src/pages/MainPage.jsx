@@ -12,7 +12,7 @@ const PageContainer = styled.div`
 // Wrapper for the search bar area
 const SearchWrapper = styled.div`
     width: 400px;
-    margin-left: 0;
+    Margin-left: 0;
 `;
 
 export default function MainPage() {

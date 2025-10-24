@@ -2,6 +2,10 @@ import React from "react";
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import styled from "styled-components";
+import L from 'leaflet';
+
+import {useBuildingGeoJSONData, useBusStopGeoJSONData,useHighwayGeoJSONData } from '../utils/loadGeoJSONData';
+
 // Styled component for the map container
 const MapContainerStyled = styled(MapContainer)`
     height: 100vh;
@@ -12,13 +16,65 @@ const tileLayer = {
   attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 };
 export default function MapView({ geoJsonData, center = [39.2554, -76.7116], zoom = 17 }) {
+  const { buildings, loading: buildingsLoading } = useBuildingGeoJSONData();
+  const { busstops, loading: busstopsLoading } = useBusStopGeoJSONData();
+  const { highways, loading: highwaysLoading } = useHighwayGeoJSONData();
+  
+  
+  if (buildingsLoading || busstopsLoading || highwaysLoading) {
+    return <div>Loading map data...</div>;
+  }
+
+// Building popup content for detailed information
+  const createPopupContent = (feature) => {
+    const props = feature?.properties || {};
+    if (!Object.keys(props).length) return '<div>No properties</div>';
+    return Object.entries(props)
+     .map(([k, v]) => `<div><strong>${k}:</strong> ${v}</div>`)
+     .join('');
+  };
+
   return (
     <MapContainerStyled center={center} zoom={zoom} scrollWheelZoom={true}>
-      <TileLayer
-        url={tileLayer.url}
-        attribution={tileLayer.attribution}
+     <TileLayer url={tileLayer.url} attribution={tileLayer.attribution} />
+
+     <GeoJSON
+      data={buildings}
+      style={() => ({
+        color: '#a3b2ccc8',
+        weight: 2,
+        fillOpacity: 0.1
+      })}
+      onEachFeature={(feature, layer) => {
+        layer.bindPopup(createPopupContent(feature));
+      }}
+     />
+
+     <GeoJSON
+      data={busstops}
+      pointToLayer={(feature, latlng) =>
+        L.circleMarker(latlng, {
+         radius: 6,
+         fillColor: 'red',
+         color: '#ff0000',
+         weight: 1,
+         opacity: 1,
+         fillOpacity: 0.8
+        })
+      }
+      onEachFeature={(feature, layer) => {
+        layer.bindPopup(createPopupContent(feature));
+      }}
+     />
+
+      <GeoJSON
+      data={highways}
+      style={() => ({
+        color: '#7a8289fc',
+        weight: 3,
+        opacity: 0.9
+      })}
       />
-      {geoJsonData && <GeoJSON data={geoJsonData} />}
     </MapContainerStyled>
   );
 }

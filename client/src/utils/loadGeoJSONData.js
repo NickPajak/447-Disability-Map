@@ -56,3 +56,21 @@ export function useBusStopGeoJSONData() {
     // return both the data and loading state
     return {busstops, loading};
 }
+
+export function useHighwayGeoJSONData() {
+    const [highways, setHighways] = useState([]);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        fetch("/geojson_data/umbc_highway_v1.geojson")
+        .then((res) => res.json())
+        .then((data) => {
+            setHighways(data.features || []);
+            setLoading(false);
+        })
+        .catch((err) => {
+            console.error("Error loading highway data: ", err);
+            setLoading(false);
+        });
+    }, []);
+    return {highways, loading};
+}   
