@@ -1,4 +1,5 @@
 import RouteSearchBar from "../components/RouteSearchBar";
+import MapView from "../components/MapView";
 import styled from "styled-components";
 
 const PageContainer = styled.div`
@@ -22,6 +23,7 @@ export default function MainPage() {
             </SearchWrapper>
 
             {/* Add map component here later */}
+            <MapView />
 
         </PageContainer>
 
