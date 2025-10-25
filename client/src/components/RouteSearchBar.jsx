@@ -18,6 +18,9 @@ const Form = styled.form`
   box-shadow: 0 2px 3px rgba(0,0,0,0.1);
   position: relative;
   width: 350px;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+  position: relative;
+  width: 350px;
 `;
 
 const Input = styled.input`
@@ -80,7 +83,9 @@ const InputRow = styled.div`
   transition: border-radius 0.15s ease;
 `;
 
-export default function RouteSearchBar() {
+
+// TODO: Allow acronyms as valid search queries
+export default function RouteSearchBar({ onSelectBuilding, placeholder}) {
   const {buildings, loading: building_loading} = useBuildingGeoJSONData();
   const {busstops, loading: bus_loading} = useBusStopGeoJSONData();
   const [query, setQuery] = useState("");
@@ -109,16 +114,17 @@ export default function RouteSearchBar() {
     setSuggestions(filtered.slice(0,5));
   };
 
-  const handleSelect = (name) => {
-    setQuery(name);
+  const handleSelect = (feature) => {
+    setQuery(feature.properties.name);
     setSuggestions([]);
+    if (onSelectBuilding) onSelectBuilding(feature);
     // TODO: handle map zoom 
   };
 
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <InputRow hasSuggestions={suggestions.length > 0}>
-        <Input type="text" placeholder="Search on campus..." value={query} onChange={handleChange}/>
+        <Input type="text" placeholder={placeholder || "Search on campus..."} value={query} onChange={handleChange}/>
         <Button type="submit">
           <MagnifyingGlassIcon style={{width: '20px', height: '20px'}} />
         </Button>
@@ -127,7 +133,7 @@ export default function RouteSearchBar() {
       {suggestions.length > 0 && (
         <SuggestionBox>
           {suggestions.map((s, i) => (
-            <SuggestionItem key={i} onClick={() => handleSelect(s.properties.name)}>
+            <SuggestionItem key={i} onClick={() => handleSelect(s)}>
               {s.properties.name}
             </SuggestionItem>
           ))}
