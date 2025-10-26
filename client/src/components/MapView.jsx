@@ -7,14 +7,14 @@ import L from 'leaflet';
 
 import {useBuildingGeoJSONData, useBusStopGeoJSONData,useHighwayGeoJSONData } from '../utils/loadGeoJSONData';
 
+// default center for the map (UMBC coordinates)
+const defaultCenter = [39.2554, -76.7116];
+
 // Styled component for the map container
 const MapContainerStyled = styled(MapContainer)`
     height: 100vh;
     width: 100%;
 `;
-
-// default center for the map (keep this name separate from the component prop)
-const defaultCenter = [39.2554, -76.7116];
 
 
 // Base Map Tile Layer
@@ -32,20 +32,39 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
     return <div>Loading map data...</div>;
   }
 
+  const buildingStyle = {
+    color: '#a3b2ccb2',
+    weight: 2,
+    fillOpacity: 0.3
+  };
+
+  const highwayStyle = {
+    color: '#7a8289fc',
+    weight: 3,
+    opacity: 0.9
+  };
+
+  const busstopStyle = {
+    radius: 6,
+    fillColor: 'red',
+    color: '#ff7300ff',
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+  };
+  
+
   return (
     <MapContainerStyled center={center} zoom={zoom} scrollWheelZoom={true}>
      <TileLayer url={tileLayer.url} attribution={tileLayer.attribution} />
 
      <GeoJSON
       data={buildings}
-      style={() => ({
-        color: '#a3b2ccc8',
-        weight: 2,
-        fillOpacity: 0.1
-      })}
+      style={() => ({...buildingStyle})}
       onEachFeature={(feature, layer) => {
         const name = feature?.properties?.name || "Building";
         const buildingId = feature.properties.building_id;
+        const desc = feature?.properties?.description || "No description available.";
         const imgHtml = `/assets/${buildingId}.jpg` ;
 
         const customPopupStyle = `
@@ -61,9 +80,12 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
             <img src="${imgHtml}" alt="${name}" 
               width="250"
               height="150"
+              style="object-fit: cover; border-radius: 4px;"
             />
+            <p style="margin-top: 8px;">${desc}</p>
+            <div style="display: flex; justify-content: space-between;">
 
-            <button 
+            <button id="add-${buildingId}"
               style="
                 margin-top: 8px;
                 padding: 6px 12px;
@@ -73,6 +95,13 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
                 border-radius: 4px;
                 cursor: pointer;
               "
+
+              //*****ADD BUTTON FUNCTIONALITY TO BE IMPLEMENTED*****
+              onclick="
+                document.getElementById('add-${buildingId}').innerText = 'ADDED',
+                window.dispatchEvent(new CustomEvent('buildingAdded', { detail: { buildingId: '${buildingId}', name: '${name}', type: 'building' } }))
+                ;"
+
             >
             + ADD
             </button>
@@ -88,6 +117,10 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
                 border-radius: 4px;
                 cursor: pointer;
                 center: right;
+              "
+              onclick="
+                // **********View floor plan function to be implemented*************
+
               "
             >
             VIEW FLOOR PLAN
@@ -124,6 +157,9 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
         })
       }
       onEachFeature={(feature, layer) => {
+        const name = feature?.properties?.name || "Bus Stop";
+        const busStopId = feature.properties.busstop_id;
+
         const customPopupStyle = `
           <div style="
            width: 200px;
@@ -132,8 +168,8 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
            text-align: left;
            font-family: Arial, sans-serif;
           ">
-            <h3 style="margin-bottom: 8px;">Bus Stop: ${feature.properties.name}</h3>
-            <button 
+            <h3 style="margin-bottom: 8px;">Bus Stop: ${name} </h3>
+            <button id ="add-${busStopId}"
               style="
                 margin-top: 8px;
                 padding: 6px 12px;
@@ -143,6 +179,14 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
                 border-radius: 4px;
                 cursor: pointer;
               "
+
+              //*****ADD BUTTON FUNCTIONALITY TO BE IMPLEMENTED*****
+              
+              onclick="
+                document.getElementById('add-${busStopId}').innerText = 'ADDED',
+                window.dispatchEvent(new CustomEvent('buildingAdded', { detail: { buildingId: '${busStopId}', name: '${name}', type: 'busstop' } }))
+                ;"
+
             >
             + ADD
             </button>
