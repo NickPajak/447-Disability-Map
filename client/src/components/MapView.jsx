@@ -33,7 +33,7 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
   }
 
   const buildingStyle = {
-    color: '#a3b2ccb2',
+    color: '#6e75817c',
     weight: 2,
     fillOpacity: 0.3
   };
@@ -46,11 +46,11 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
 
   const busstopStyle = {
     radius: 6,
-    fillColor: 'red',
-    color: '#ff7300ff',
+    fillColor: 'rgba(255, 94, 0, 1)', 
+    color: 'rgba(0, 0, 0, 1)',    
     weight: 1,
     opacity: 1,
-    fillOpacity: 0.8
+    fillOpacity: 0.9
   };
   
 
@@ -120,7 +120,6 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
               "
               onclick="
                 // **********View floor plan function to be implemented*************
-
               "
             >
             VIEW FLOOR PLAN
@@ -137,25 +136,16 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
 
       <GeoJSON
       data={highways}
-      style={() => ({
-        color: '#7a8289fc',
-        weight: 3,
-        opacity: 0.9
-      })}
+      style={() => ({...highwayStyle})}
       />
+
 
       <GeoJSON
       data={busstops}
       pointToLayer={(feature, latlng) =>
-        L.circleMarker(latlng, {
-         radius: 6,
-         fillColor: 'red',
-         color: '#ff0000',
-         weight: 1,
-         opacity: 1,
-         fillOpacity: 0.8
-        })
+        L.circleMarker(latlng, busstopStyle)
       }
+
       onEachFeature={(feature, layer) => {
         const name = feature?.properties?.name || "Bus Stop";
         const busStopId = feature.properties.busstop_id;
@@ -181,7 +171,7 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
               "
 
               //*****ADD BUTTON FUNCTIONALITY TO BE IMPLEMENTED*****
-              
+
               onclick="
                 document.getElementById('add-${busStopId}').innerText = 'ADDED',
                 window.dispatchEvent(new CustomEvent('buildingAdded', { detail: { buildingId: '${busStopId}', name: '${name}', type: 'busstop' } }))
