@@ -66,6 +66,10 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
         const buildingId = feature.properties.building_id;
         const desc = feature?.properties?.description || "No description available.";
         const imgHtml = `/assets/${buildingId}.jpg` ;
+  
+        const defaultImgHtml = `https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg`;
+        const defaultImgAttribution = `<a href="https://commons.wikimedia.org/wiki/File:No_image_available.svg" target="_blank" rel="noopener noreferrer">Cburnett</a>, Public domain, via Wikimedia Commons`;
+        
 
         const customPopupStyle = `
           <div style ="
@@ -78,6 +82,7 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
         
             <h3 style="margin-bottom: 8px;">${name}</h3>
             <img src="${imgHtml}" alt="${name}" 
+              onerror="this.onerror=null;this.src='${defaultImgHtml}';"
               width="250"
               height="150"
               style="object-fit: cover; border-radius: 4px;"
