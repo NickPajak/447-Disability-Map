@@ -1,0 +1,485 @@
+{
+  "bldg_02": {
+    "building_id": "bldg_02",
+    "acronym": "ADMIN",
+    "floorplans-available": false,
+    "image": "/assets/bldg_02.jpg",
+    "description": ""
+  },
+  "bldg_03": {
+    "building_id": "bldg_03",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_03.jpg",
+    "description": ""
+  },
+  "bldg_04": {
+    "building_id": "bldg_04",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_04.jpg",
+    "description": ""
+  },
+  "bldg_05": {
+    "building_id": "bldg_05",
+    "acronym": "ROTC",
+    "floorplans-available": false,
+    "image": "/assets/bldg_05.jpg",
+    "description": ""
+  },
+  "bldg_06": {
+    "building_id": "bldg_06",
+    "acronym": "BIOL",
+    "floorplans-available": false,
+    "image": "/assets/bldg_06.jpg",
+    "description": ""
+  },
+  "bldg_09": {
+    "building_id": "bldg_09",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_09.jpg",
+    "description": ""
+  },
+  "bldg_10": {
+    "building_id": "bldg_10",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_10.jpg",
+    "description": ""
+  },
+  "bldg_11": {
+    "building_id": "bldg_11",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_11.jpg",
+    "description": ""
+  },
+  "bldg_12": {
+    "building_id": "bldg_12",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_12.jpg",
+    "description": ""
+  },
+  "bldg_13": {
+    "building_id": "bldg_13",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_13.jpg",
+    "description": ""
+  },
+  "bldg_14": {
+    "building_id": "bldg_14",
+    "acronym": "ENGR",
+    "floorplans-available": false,
+    "image": "/assets/bldg_14.jpg",
+    "description": "Houses the Department of Chemical, Biochemical, & Environmental Engineering, and the Department of Mechanical Engineering."
+  },
+  "bldg_15": {
+    "building_id": "bldg_15",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_15.jpg",
+    "description": ""
+  },
+  "bldg_16": {
+    "building_id": "bldg_16",
+    "acronym": "FA",
+    "floorplans-available": false,
+    "image": "/assets/bldg_16.jpg",
+    "description": "Houses lots of creative facilities such as the Production Center, Open Studios, Study and Work Areas, and Hallway Galleries. "
+  },
+  "bldg_17": {
+    "building_id": "bldg_17",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_17.jpg",
+    "description": ""
+  },
+  "bldg_18": {
+    "building_id": "bldg_18",
+    "acronym": "ITE",
+    "floorplans-available": false,
+    "image": "/assets/bldg_18.jpg",
+    "description": "Along with housing the Department of Computer Science & Electrical Engineering, and the Department of Information Systems, the ITE building is also where the COEIT Dean's Offices, Engineering and Computing Education Program (ECEP), Undergraduate Student Services, and the Center for Women in Technology is located."
+  },
+  "bldg_20": {
+    "building_id": "bldg_20",
+    "acronym": "LIBR",
+    "floorplans-available": false,
+    "image": "/assets/bldg_20.jpg",
+    "description": ""
+  },
+  "bldg_21": {
+    "building_id": "bldg_21",
+    "acronym": "MP",
+    "floorplans-available": false,
+    "image": "/assets/bldg_21.jpg",
+    "description": ""
+  },
+  "bldg_22": {
+    "building_id": "bldg_22",
+    "acronym": "MEYR",
+    "floorplans-available": false,
+    "image": "/assets/bldg_22.jpg",
+    "description": "In addition to chemistry classes and the Department of Chemical and Biochemistry, this building also houses the Howard Hughes Medical Institute (HHMI)."
+  },
+  "bldg_23": {
+    "building_id": "bldg_23",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_23.jpg",
+    "description": ""
+  },
+  "bldg_24": {
+    "building_id": "bldg_24",
+    "acronym": "PAHB",
+    "floorplans-available": false,
+    "image": "/assets/bldg_24.jpg",
+    "description": ""
+  },
+  "bldg_25": {
+    "building_id": "bldg_25",
+    "acronym": "PHYS",
+    "floorplans-available": false,
+    "image": "/assets/bldg_25.jpg",
+    "description": ""
+  },
+  "bldg_26": {
+    "building_id": "bldg_26",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_26.jpg",
+    "description": ""
+  },
+  "bldg_27": {
+    "building_id": "bldg_27",
+    "acronym": "PUP",
+    "floorplans-available": false,
+    "image": "/assets/bldg_27.jpg",
+    "description": ""
+  },
+  "bldg_28": {
+    "building_id": "bldg_28",
+    "acronym": "RAC",
+    "floorplans-available": false,
+    "image": "/assets/bldg_28.jpg",
+    "description": ""
+  },
+  "bldg_30": {
+    "building_id": "bldg_30",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_30.jpg",
+    "description": ""
+  },
+  "bldg_31": {
+    "building_id": "bldg_31",
+    "acronym": "SHER",
+    "floorplans-available": false,
+    "image": "/assets/bldg_31.jpg",
+    "description": ""
+  },
+  "bldg_32": {
+    "building_id": "bldg_32",
+    "acronym": "SOND",
+    "floorplans-available": false,
+    "image": "/assets/bldg_32.jpg",
+    "description": ""
+  },
+  "bldg_33": {
+    "building_id": "bldg_33",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_33.jpg",
+    "description": ""
+  },
+  "bldg_34": {
+    "building_id": "bldg_34",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_34.jpg",
+    "description": ""
+  },
+  "bldg_35": {
+    "building_id": "bldg_35",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_35.jpg",
+    "description": ""
+  },
+  "bldg_37": {
+    "building_id": "bldg_37",
+    "acronym": "UC",
+    "floorplans-available": false,
+    "image": "/assets/bldg_37.jpg",
+    "description": ""
+  },
+  "bldg_38": {
+    "building_id": "bldg_38",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_38.jpg",
+    "description": ""
+  },
+  "bldg_39": {
+    "building_id": "bldg_39",
+    "acronym": "LEC",
+    "floorplans-available": false,
+    "image": "/assets/bldg_39.jpg",
+    "description": ""
+  },
+  "bldg_40": {
+    "building_id": "bldg_40",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_40.jpg",
+    "description": ""
+  },
+  "bldg_41": {
+    "building_id": "bldg_41",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_41.jpg",
+    "description": ""
+  },
+  "bldg_42": {
+    "building_id": "bldg_42",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_42.jpg",
+    "description": ""
+  },
+  "bldg_48": {
+    "building_id": "bldg_48",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_48.jpg",
+    "description": ""
+  },
+  "bldg_49": {
+    "building_id": "bldg_49",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_49.jpg",
+    "description": ""
+  },
+  "bldg_50": {
+    "building_id": "bldg_50",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_50.jpg",
+    "description": ""
+  },
+  "bldg_51": {
+    "building_id": "bldg_51",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_51.jpg",
+    "description": ""
+  },
+  "bldg_52": {
+    "building_id": "bldg_52",
+    "acronym": "BIOL",
+    "floorplans-available": false,
+    "image": "/assets/bldg_52.jpg",
+    "description": ""
+  },
+  "bldg_53": {
+    "building_id": "bldg_53",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_53.jpg",
+    "description": ""
+  },
+  "bldg_54": {
+    "building_id": "bldg_54",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_54.jpg",
+    "description": ""
+  },
+  "bldg_55": {
+    "building_id": "bldg_55",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_55.jpg",
+    "description": ""
+  },
+  "bldg_5523": {
+    "building_id": "bldg_5523",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_5523.jpg",
+    "description": ""
+  },
+  "bldg_5525": {
+    "building_id": "bldg_5525",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_5525.jpg",
+    "description": ""
+  },
+  "bldg_56": {
+    "building_id": "bldg_56",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_56.jpg",
+    "description": ""
+  },
+  "bldg_57": {
+    "building_id": "bldg_57",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_57.jpg",
+    "description": ""
+  },
+  "bldg_58": {
+    "building_id": "bldg_58",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_58.jpg",
+    "description": ""
+  },
+  "bldg_59": {
+    "building_id": "bldg_59",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_59.jpg",
+    "description": ""
+  },
+  "bldg_60": {
+    "building_id": "bldg_60",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_60.jpg",
+    "description": ""
+  },
+  "bldg_61": {
+    "building_id": "bldg_61",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_61.jpg",
+    "description": ""
+  },
+  "bldg_62": {
+    "building_id": "bldg_62",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_62.jpg",
+    "description": ""
+  },
+  "bldg_63": {
+    "building_id": "bldg_63",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_63.jpg",
+    "description": ""
+  },
+  "bldg_64": {
+    "building_id": "bldg_64",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_64.jpg",
+    "description": ""
+  },
+  "bldg_65": {
+    "building_id": "bldg_65",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_65.jpg",
+    "description": ""
+  },
+  "bldg_66": {
+    "building_id": "bldg_66",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_66.jpg",
+    "description": ""
+  },
+  "bldg_67": {
+    "building_id": "bldg_67",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_67.jpg",
+    "description": ""
+  },
+  "bldg_68": {
+    "building_id": "bldg_68",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_68.jpg",
+    "description": ""
+  },
+  "bldg_69": {
+    "building_id": "bldg_69",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_69.jpg",
+    "description": ""
+  },
+  "bldg_70": {
+    "building_id": "bldg_70",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_70.jpg",
+    "description": ""
+  },
+  "bldg_71": {
+    "building_id": "bldg_71",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_71.jpg",
+    "description": ""
+  },
+  "bldg_72": {
+    "building_id": "bldg_72",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_72.jpg",
+    "description": ""
+  },
+  "bldg_73": {
+    "building_id": "bldg_73",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_73.jpg",
+    "description": ""
+  },
+  "bldg_74": {
+    "building_id": "bldg_74",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_74.jpg",
+    "description": ""
+  },
+  "bldg_75": {
+    "building_id": "bldg_75",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_75.jpg",
+    "description": ""
+  },
+  "bldg_76": {
+    "building_id": "bldg_76",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_76.jpg",
+    "description": ""
+  },
+  "bldg_77": {
+    "building_id": "bldg_77",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_77.jpg",
+    "description": ""
+  },
+  "bldg_78": {
+    "building_id": "bldg_78",
+    "acronym": "",
+    "floorplans-available": false,
+    "image": "/assets/bldg_78.jpg",
+    "description": ""
+  }
+}
