@@ -50,8 +50,8 @@ const MenuItem = styled.a`
   }
 `;
 const CloseButton = styled.button`
-  position: absolute; 
-  top: 14px;
+  position: absolute;
+  top: 8px;     
   right: 12px;
   background: none;
   border: none;
