@@ -23,7 +23,7 @@ const tileLayer = {
   attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 };
 
-export default function MapView({ selectedFeature, geoJsonData, center = [39.2554, -76.7116], zoom = 17 }) {
+export default function MapView({ selectedFeature, geoJsonData, center = defaultCenter, zoom = 17 }) {
     function ZoomFeature({feature}) {
     const map = useMap();
     useEffect(() => {
@@ -53,7 +53,6 @@ export default function MapView({ selectedFeature, geoJsonData, center = [39.255
     return null
   }
   
-export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17 }) {
   const { buildings, loading: buildingsLoading } = useBuildingGeoJSONData();
   const { busstops, loading: busstopsLoading } = useBusStopGeoJSONData();
   const { highways, loading: highwaysLoading } = useHighwayGeoJSONData();
@@ -223,14 +222,6 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
       }}
      />
 
-      <GeoJSON
-      data={highways}
-      style={() => ({
-        color: '#7a8289fc',
-        weight: 3,
-        opacity: 0.9
-      })}
-      />
 
 
       {selectedFeature && <ZoomFeature feature={selectedFeature} />}
