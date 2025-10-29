@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {use, useEffect} from 'react';
 import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import styled from "styled-components";
@@ -6,6 +6,7 @@ import L from 'leaflet';
 
 
 import {useBuildingGeoJSONData, useBusStopGeoJSONData,useHighwayGeoJSONData } from '../utils/loadGeoJSONData';
+import { useBuildingMetadata } from '../utils/loadMetadata';
 
 // default center for the map (UMBC coordinates)
 const defaultCenter = [39.2554, -76.7116];
@@ -23,7 +24,7 @@ const tileLayer = {
   attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 };
 
-export default function MapView({ selectedFeature, geoJsonData, center = [39.2554, -76.7116], zoom = 17 }) {
+export default function MapView({ selectedFeature, geoJsonData, center = defaultCenter, zoom = 17 }) {
     function ZoomFeature({feature}) {
     const map = useMap();
     useEffect(() => {
@@ -53,13 +54,14 @@ export default function MapView({ selectedFeature, geoJsonData, center = [39.255
     return null
   }
   
-export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17 }) {
   const { buildings, loading: buildingsLoading } = useBuildingGeoJSONData();
   const { busstops, loading: busstopsLoading } = useBusStopGeoJSONData();
   const { highways, loading: highwaysLoading } = useHighwayGeoJSONData();
+
+  const metadata = useBuildingMetadata();
   
   
-  if (buildingsLoading || busstopsLoading || highwaysLoading) {
+  if (buildingsLoading || busstopsLoading || highwaysLoading || !metadata) {
     return <div>Loading map data...</div>;
   }
 
@@ -77,12 +79,13 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
 
   const busstopStyle = {
     radius: 6,
-    fillColor: 'rgba(255, 94, 0, 1)', 
-    color: 'rgba(0, 0, 0, 1)',    
+    fillColor: '#ff5e00', 
+    color: '#000000',   
     weight: 1,
     opacity: 1,
     fillOpacity: 0.9
   };
+
   
 
   return (
@@ -92,11 +95,13 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
      <GeoJSON
       data={buildings}
       style={() => ({...buildingStyle})}
-      onEachFeature={(feature, layer) => {
-        const name = feature?.properties?.name || "Building";
+      onEachFeature={(feature, layer) => {  
+        const name = feature.properties.name || "Building";
         const buildingId = feature.properties.building_id;
-        const desc = feature?.properties?.description || "No description available.";
-        const imgHtml = `/assets/${buildingId}.jpg` ;
+        
+        const info = metadata[buildingId] || {};
+        const desc = info.description || "No description available.";
+        const imgHtml = info.image || "No image available." ;
   
         const defaultImgHtml = `https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg`;
         const defaultImgAttribution = `<a href="https://commons.wikimedia.org/wiki/File:No_image_available.svg" target="_blank" rel="noopener noreferrer">Cburnett</a>, Public domain, via Wikimedia Commons`;
@@ -113,7 +118,7 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
         
             <h3 style="margin-bottom: 8px;">${name}</h3>
             <img src="${imgHtml}" alt="${name}" 
-              onerror="this.onerror=null;this.src='${defaultImgHtml}';"
+              onerror="this.onerror=null;this.src='${defaultImgHtml}'"
               width="250"
               height="150"
               style="object-fit: cover; border-radius: 4px;"
@@ -134,9 +139,9 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
 
               //*****ADD BUTTON FUNCTIONALITY TO BE IMPLEMENTED*****
               onclick="
-                document.getElementById('add-${buildingId}').innerText = 'ADDED',
-                window.dispatchEvent(new CustomEvent('buildingAdded', { detail: { buildingId: '${buildingId}', name: '${name}', type: 'building' } }))
-                ;"
+                this.innerText = 'ADDED';
+                window.dispatchEvent(new CustomEvent('buildingAdded', { detail: { buildingId: '${buildingId}', name: '${name}', type: 'building' } }));
+              "
 
             >
             + ADD
@@ -164,7 +169,6 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
 
         `;
 
-      // build the popup HTML as a string (embed image path directly into src)
         layer.bindPopup(customPopupStyle);
 
       }}
@@ -223,14 +227,6 @@ export default function MapView({ geoJsonData, center = defaultCenter, zoom = 17
       }}
      />
 
-      <GeoJSON
-      data={highways}
-      style={() => ({
-        color: '#7a8289fc',
-        weight: 3,
-        opacity: 0.9
-      })}
-      />
 
 
       {selectedFeature && <ZoomFeature feature={selectedFeature} />}
