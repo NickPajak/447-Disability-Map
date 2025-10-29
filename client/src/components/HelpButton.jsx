@@ -113,6 +113,8 @@ export default function HelpButton() {
 
             <MenuItem  onClick={(toggleDarkMode) => {document.body.classList.toggle('large-font');}}>
             Toggle Large Font
+            <MenuItem >
+            
             </MenuItem>
             <MenuItem  onClick={() => {document.body.classList.toggle('high-contrast');}}>
             Toggle High Contrast
