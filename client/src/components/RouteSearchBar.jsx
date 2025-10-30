@@ -28,8 +28,8 @@ const Input = styled.input`
   padding: 0.5rem;
   border: none;
   outline: none;
-  background-color: #3b3b3bff;
-  color: white;
+  background-color: #c7c8ca;
+  color: black;
 `;
 
 const Button = styled.button`
@@ -50,9 +50,9 @@ const SuggestionBox = styled.ul`
   top: 60%;
   left: 0;
   width: 99.5%;
-  background: #3b3b3b;
+  background: #c7c8ca;
   border-radius: 0 0 1rem 1rem;
-  border: 1px solid #3a3a3a;
+  border: 1px solid #c7c8ca;
   margin-top: 0.3 rem;
   list-style: none;
   padding: 0;
@@ -62,11 +62,11 @@ const SuggestionBox = styled.ul`
 const SuggestionItem = styled.li`
   // TODO: Add more accessibility information to each item
   padding: 0.5rem 1rem;
-  color: white;
+  color: #000000ff;
   cursor: pointer;
 
   &:hover {
-    background-color: #505050;
+    background-color: #e4e3e3b0;
     border-radius: 1rem 1rem 1rem 1rem;
   }
 `;
@@ -74,8 +74,8 @@ const SuggestionItem = styled.li`
 const InputRow = styled.div`
   display: flex;
   align-items: center;
-  background-color: #3b3b3bff;
-  border: 1px solid #3a3a3aff;
+  background-color: #c7c8ca;
+  border: 1px solid #bebdbdff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 0.5rem;
   width: 100%;
@@ -142,7 +142,7 @@ export default function RouteSearchBar({ onSelectBuilding, placeholder}) {
             <SuggestionItem key={i} onClick={() => handleSelect(s)}>
               {s.properties.name}
               {acronym && (
-                <span style={{ color: "#bbb", marginLeft: "8px"}}>
+                <span style={{ color: "black", marginLeft: "8px"}}>
                   ({acronym})
                 </span>
               )}

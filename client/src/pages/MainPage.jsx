@@ -15,7 +15,7 @@ const GlobalStyle = createGlobalStyle`
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-color: #2e2e2e;
+    background-color: #acaaaaff;
   }
 `;
 
@@ -29,18 +29,18 @@ const PageContainer = styled.div`
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-color: #2e2e2e;
+    background-color: #a7a7a7ff;
 `;
 
 const SideBar = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    width: 435px;
+    width: 440px;
     height: 100%;
-    background-color: #2e2e2e;
+    background-color: #F5F5F5;
     color: white;
-    border-right: 2px solid #444;
+    border-right: 2px solid #F5F5F5;
     padding: 1rem 1rem 1rem 1rem;
     overflow-y: auto;
     scrollbar-width: none; /* Firefox */

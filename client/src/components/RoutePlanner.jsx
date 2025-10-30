@@ -2,7 +2,33 @@ import React, {useState} from 'react';
 import styled from "styled-components";
 import RouteSearchBar from './RouteSearchBar';
 import DestinationCard from './DestinationCard';
-import {MapPinIcon} from '@heroicons/react/24/solid';
+import {MapPinIcon, HomeIcon} from '@heroicons/react/24/solid';
+import { Icon } from 'leaflet';
+
+const CardRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  position: relative;
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+const Title = styled.h2`
+  text-align: center;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  padding: 5px;
+  color: #000000;
+`;
 
 const StartRouteButton = styled.button`
     background-color: #fdb515;
@@ -50,7 +76,7 @@ export default function RoutePlanner( {onSelectFeature}) {
 
     return(
         <div style={{ position: "relative", paddingBottom:"80px"}}>
-            <h2>Campus Compass</h2>
+            <Title>Campus Compass</Title>
             <RouteSearchBar 
                 key={step}
                 placeholder={
@@ -68,36 +94,49 @@ export default function RoutePlanner( {onSelectFeature}) {
                     alignItems: "center",
                     justifyContent: "center",
                     height: "200px", 
-                    backgroundColor: "rgba(0, 0, 0, 0.25)", 
+                    backgroundColor: "rgba(253, 180, 21, 0)", 
                     borderRadius: "12px",
                     marginBottom: "16px",
                     textAlign: "center",
-                    color: "white",
+                    color: "black",
                     fontSize: "1.2rem",
-                    fontWeight: "500",
+                    fontWeight: "700",
                     gap: "10px",
                     }}
                 >
-                    <MapPinIcon style={{width: '50px', height: '50px'}} />
+                    <MapPinIcon style={{width: '50px', height: '50px', color: '#fdb515'}} />
                     <div>Your path, made easier. </div>
                     <div>Begin by adding your current location. </div>
                 </div>
             )}
 
             {/* Show both cards stacked below */}
-            <div style={{ marginTop: "16px" }}>
+            <div style={{ marginTop: "16px", position: "relative" }}>
                 {startDestination && (
+                    <CardRow>
+                        <IconWrapper style={{ marginTop: "8px"}}>
+                            <HomeIcon style={{width: "28px", height: "28px", color: 'black'}} />
+                        </IconWrapper>
+                        
                 <DestinationCard
                     label="Start"
                     building={startDestination}
                 />
+                </CardRow>
                 )}
 
                 {endDestination && (
-                <DestinationCard
-                    label="End"
-                    building={endDestination}
-                />
+                    <>  
+                        <CardRow>
+                            <IconWrapper>
+                                <MapPinIcon style={{ width: "28px", height: "28px", color: 'black'}} />
+                            </IconWrapper>
+                            <DestinationCard
+                            label="End"
+                            building={endDestination}
+                            />
+                        </CardRow>
+                    </>
                 )}
             </div>
 
