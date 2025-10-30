@@ -20,7 +20,7 @@ const Form = styled.form`
   width: 350px;
   box-shadow: 0 2px 3px rgba(0,0,0,0.1);
   position: relative;
-  width: 350px;
+  width: 100%;
 `;
 
 const Input = styled.input`
@@ -42,14 +42,14 @@ const Button = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #ecf01cff; 
+    background-color: #fdb515; 
   }
 `;
 const SuggestionBox = styled.ul`
   position: absolute;
   top: 60%;
   left: 0;
-  width: 348px;
+  width: 99.5%;
   background: #3b3b3b;
   border-radius: 0 0 1rem 1rem;
   border: 1px solid #3a3a3a;
@@ -78,13 +78,11 @@ const InputRow = styled.div`
   border: 1px solid #3a3a3aff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 0.5rem;
-  width: 350px;
+  width: 100%;
   border-radius: ${(props) => (props.hasSuggestions ? '1.5rem 1.5rem 0 0': '1.5rem')};
   transition: border-radius 0.15s ease;
 `;
 
-
-// TODO: Allow acronyms as valid search queries
 export default function RouteSearchBar({ onSelectBuilding, placeholder}) {
   const metadata = useBuildingMetadata();
 

@@ -1,7 +1,24 @@
 import React, {useState} from 'react';
+import styled from "styled-components";
 import RouteSearchBar from './RouteSearchBar';
 import DestinationCard from './DestinationCard';
-import MapView from './MapView';
+import {MapPinIcon} from '@heroicons/react/24/solid';
+
+const StartRouteButton = styled.button`
+    background-color: #fdb515;
+    color: black;
+    border-radius: 1rem;
+    border: none;
+    cursor: pointer;
+    padding: 3px 20px;
+    margin-top: 24px; 
+
+    &:hover {
+        background-color: #3b3b3b;
+        color: #fdb515;
+    }
+
+`;
 
 export default function RoutePlanner( {onSelectFeature}) {
     // Track which step the user is on: "start", "end", or "done"
@@ -11,7 +28,7 @@ export default function RoutePlanner( {onSelectFeature}) {
     const [startDestination, setStartDestination] = useState(null);
     const [endDestination, setEndDestination] = useState(null);
 
-    const [selectedFeature, setSelectedFeature] = useState(null);
+    //const [selectedFeature, setSelectedFeature] = useState(null);
 
     const handleSelectBuilding = (building) => {
         if(step === "start") {
@@ -32,8 +49,8 @@ export default function RoutePlanner( {onSelectFeature}) {
     };
 
     return(
-        <div>
-            <h2>Route Planner</h2>
+        <div style={{ position: "relative", paddingBottom:"80px"}}>
+            <h2>Campus Compass</h2>
             <RouteSearchBar 
                 key={step}
                 placeholder={
@@ -41,6 +58,32 @@ export default function RoutePlanner( {onSelectFeature}) {
                 }
                 onSelectBuilding={handleSelectBuilding}
             />
+
+            {/* if there's no place added to route, add default welcome text*/}
+            {!startDestination && !endDestination && (
+                <div
+                    style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "200px", 
+                    backgroundColor: "rgba(0, 0, 0, 0.25)", 
+                    borderRadius: "12px",
+                    marginBottom: "16px",
+                    textAlign: "center",
+                    color: "white",
+                    fontSize: "1.2rem",
+                    fontWeight: "500",
+                    gap: "10px",
+                    }}
+                >
+                    <MapPinIcon style={{width: '50px', height: '50px'}} />
+                    <div>Your path, made easier. </div>
+                    <div>Begin by adding your current location. </div>
+                </div>
+            )}
+
             {/* Show both cards stacked below */}
             <div style={{ marginTop: "16px" }}>
                 {startDestination && (
@@ -58,7 +101,6 @@ export default function RoutePlanner( {onSelectFeature}) {
                 )}
             </div>
 
-            {/* Optional reset button */}
             {(startDestination || endDestination) && (
                 <button
                 onClick={resetRoute}
@@ -74,6 +116,17 @@ export default function RoutePlanner( {onSelectFeature}) {
                 >
                 Reset
                 </button>
+            )}
+            {/*TODO: Integrate button with route planning*/}
+            {startDestination && endDestination && (
+                <StartRouteButton style={{
+                position: "absolute",
+                bottom: "20px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                }}>
+                    <h3>Start Route</h3>
+                </StartRouteButton>
             )}
         </div>
     );
