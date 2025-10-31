@@ -91,12 +91,20 @@ export default function DestinationCard({ label, building, onClear}) {
 
     const id = building.properties.building_id;
     const info = metadata[id] || {};
-    const imageSrc = `/assets/${id || "default"}.jpg`;
+    const defaultImageSrc = "/assets/default.jpg";
+    const imageSrc = id ? `/assets/${id}.jpg` : defaultImageSrc;
 
     return(
         <Card>
             <ImageWrapper>
-                <BuildingImage src={imageSrc} alt={building?.properties?.name || "Building"}/>
+                <BuildingImage
+                    src={imageSrc}
+                    alt={building?.properties?.name || "Building"}
+                    onError={(event) => {
+                        event.currentTarget.onerror = null;
+                        event.currentTarget.src = defaultImageSrc;
+                    }}
+                />
             </ImageWrapper>
             <Label>{building.properties.name}</Label> 
             <TextWrapper>
