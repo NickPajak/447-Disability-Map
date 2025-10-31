@@ -1,7 +1,7 @@
 import MapView from "../components/MapView";
 import RoutePlanner from "../components/RoutePlanner";
 import styled from "styled-components";
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
@@ -22,8 +22,8 @@ const GlobalStyle = createGlobalStyle`
 const PageContainer = styled.div`
     display: flex;
     position: fixed;
-    top: 0;       /* ensures no top gap */
-    left: 0;      /* ensures no left gap */
+    top: 0;
+    left: 0;
     right: 0;
     bottom: 0;
     width: 100vw;
@@ -43,36 +43,51 @@ const SideBar = styled.div`
     border-right: 2px solid #F5F5F5;
     padding: 1rem 1rem 1rem 1rem;
     overflow-y: auto;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
-    
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
     &::-webkit-scrollbar {
-        display: none; /* Chrome, Safari */
+        display: none;
     }
-    
 `;
 
 const MapContainer = styled.div`
-    flex: 1; /* take remaining space on the right */
-    background-color: #d9d9d9; /* placeholder for map */
+    flex: 1;
+    background-color: #d9d9d9;
     width: calc(100vw - 400px);
 `;
 
 export default function MainPage() {
     const [selectedFeature, setSelectedFeature] = useState(null);
+    const [featureToAdd, setFeatureToAdd] = useState(null);
+
+    const handleAddFeature = (feature) => {
+        setFeatureToAdd(feature);
+        setSelectedFeature(feature);
+    };
+
+    const handleFeatureConsumed = () => {
+        setFeatureToAdd(null);
+    };
+
     return (
         <>
             <GlobalStyle />
             <PageContainer>
                 <SideBar>
-                    <RoutePlanner onSelectFeature={setSelectedFeature}/>
+                    <RoutePlanner
+                        onSelectFeature={setSelectedFeature}
+                        addFeature={featureToAdd}
+                        onFeatureConsumed={handleFeatureConsumed}
+                    />
                 </SideBar>
                 <MapContainer>
-                    <MapView selectedFeature={selectedFeature} />
+                    <MapView
+                        selectedFeature={selectedFeature}
+                        onAddFeature={handleAddFeature}
+                    />
                 </MapContainer>
             </PageContainer>
         </>
-            
-        
     );
 }

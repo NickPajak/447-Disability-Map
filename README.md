@@ -25,3 +25,5 @@ src/
     context/ -- react content for global states  
     utils/ -- helper functions  
     styles/ -- CSS or Tailwind config  
+
+
