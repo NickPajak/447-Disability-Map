@@ -1,7 +1,50 @@
 import React, {useState} from 'react';
+import styled from "styled-components";
 import RouteSearchBar from './RouteSearchBar';
 import DestinationCard from './DestinationCard';
-import MapView from './MapView';
+import {MapPinIcon, HomeIcon} from '@heroicons/react/24/solid';
+import { Icon } from 'leaflet';
+
+const CardRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  position: relative;
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+const Title = styled.h2`
+  text-align: center;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  padding: 5px;
+  color: #000000;
+`;
+
+const StartRouteButton = styled.button`
+    background-color: #fdb515;
+    color: black;
+    border-radius: 1rem;
+    border: none;
+    cursor: pointer;
+    padding: 3px 20px;
+    margin-top: 24px; 
+
+    &:hover {
+        background-color: #3b3b3b;
+        color: #fdb515;
+    }
+
+`;
 
 export default function RoutePlanner( {onSelectFeature}) {
     // Track which step the user is on: "start", "end", or "done"
@@ -11,7 +54,7 @@ export default function RoutePlanner( {onSelectFeature}) {
     const [startDestination, setStartDestination] = useState(null);
     const [endDestination, setEndDestination] = useState(null);
 
-    const [selectedFeature, setSelectedFeature] = useState(null);
+    //const [selectedFeature, setSelectedFeature] = useState(null);
 
     const handleSelectBuilding = (building) => {
         if(step === "start") {
@@ -32,8 +75,8 @@ export default function RoutePlanner( {onSelectFeature}) {
     };
 
     return(
-        <div>
-            <h2>Route Planner</h2>
+        <div style={{ position: "relative", paddingBottom:"80px"}}>
+            <Title>Campus Compass</Title>
             <RouteSearchBar 
                 key={step}
                 placeholder={
@@ -41,24 +84,62 @@ export default function RoutePlanner( {onSelectFeature}) {
                 }
                 onSelectBuilding={handleSelectBuilding}
             />
+
+            {/* if there's no place added to route, add default welcome text*/}
+            {!startDestination && !endDestination && (
+                <div
+                    style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "200px", 
+                    backgroundColor: "rgba(253, 180, 21, 0)", 
+                    borderRadius: "12px",
+                    marginBottom: "16px",
+                    textAlign: "center",
+                    color: "black",
+                    fontSize: "1.2rem",
+                    fontWeight: "700",
+                    gap: "10px",
+                    }}
+                >
+                    <MapPinIcon style={{width: '50px', height: '50px', color: '#fdb515'}} />
+                    <div>Your path, made easier. </div>
+                    <div>Begin by adding your current location. </div>
+                </div>
+            )}
+
             {/* Show both cards stacked below */}
-            <div style={{ marginTop: "16px" }}>
+            <div style={{ marginTop: "16px", position: "relative" }}>
                 {startDestination && (
+                    <CardRow>
+                        <IconWrapper style={{ marginTop: "8px"}}>
+                            <HomeIcon style={{width: "28px", height: "28px", color: 'black'}} />
+                        </IconWrapper>
+                        
                 <DestinationCard
                     label="Start"
                     building={startDestination}
                 />
+                </CardRow>
                 )}
 
                 {endDestination && (
-                <DestinationCard
-                    label="End"
-                    building={endDestination}
-                />
+                    <>  
+                        <CardRow>
+                            <IconWrapper>
+                                <MapPinIcon style={{ width: "28px", height: "28px", color: 'black'}} />
+                            </IconWrapper>
+                            <DestinationCard
+                            label="End"
+                            building={endDestination}
+                            />
+                        </CardRow>
+                    </>
                 )}
             </div>
 
-            {/* Optional reset button */}
             {(startDestination || endDestination) && (
                 <button
                 onClick={resetRoute}
@@ -74,6 +155,17 @@ export default function RoutePlanner( {onSelectFeature}) {
                 >
                 Reset
                 </button>
+            )}
+            {/*TODO: Integrate button with route planning*/}
+            {startDestination && endDestination && (
+                <StartRouteButton style={{
+                position: "absolute",
+                bottom: "20px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                }}>
+                    <h3>Start Route</h3>
+                </StartRouteButton>
             )}
         </div>
     );
