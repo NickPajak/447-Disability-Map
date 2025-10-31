@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import styled from "styled-components";
@@ -6,6 +6,17 @@ import L from 'leaflet';
 import {useBuildingGeoJSONData, useBusStopGeoJSONData,useHighwayGeoJSONData } from '../utils/loadGeoJSONData';
 import { useBuildingMetadata } from '../utils/loadMetadata';
 
+import iconUrl from "leaflet/dist/images/marker-icon.png";
+import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
+import shadowUrl from "leaflet/dist/images/marker-shadow.png";
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
+});
 // default center for the map (UMBC coordinates)
 const defaultCenter = [39.2554, -76.7116];
 
@@ -22,6 +33,7 @@ const tileLayer = {
   attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 };
 
+//return center of the building
 function getFeatureCenter(feature){
     if (!feature.geometry) return null;
 
@@ -57,6 +69,9 @@ function ZoomFeature({feature}) {
   return null
 }
 
+//hide building types. not show mis items in building geojson
+const hiddenTypes = ["bridge", "deck", "Loading Dock"];
+
 
 export default function MapView({ selectedFeature, onAddFeature, geoJsonData, center = defaultCenter, zoom = 17 }) {
   //Load geoJsonData 
@@ -91,7 +106,15 @@ export default function MapView({ selectedFeature, onAddFeature, geoJsonData, ce
     fillOpacity: 0.9
   };
 
-  const buildingMarkers = buildings.map((feature, index) => {
+  //Marker + Popup 
+  const buildingMarkers = buildings
+        //hide mis buildings
+      .filter((feature)=> {
+        const name = feature.properties.name?.toLowerCase() || "";
+        return !(hiddenTypes.includes(name));
+      })
+      //show marker
+      .map((feature, index) => {
         const center = getFeatureCenter(feature);
         if (!center) return null;
 
@@ -132,6 +155,7 @@ export default function MapView({ selectedFeature, onAddFeature, geoJsonData, ce
                         borderRadius: "4px",
                         cursor: "pointer",
                       }}
+                      
                 >
                   + ADD
                 </button>
@@ -140,6 +164,17 @@ export default function MapView({ selectedFeature, onAddFeature, geoJsonData, ce
                 onclick="
                 // **********View floor plan function to be implemented************
                 "
+                style={{
+                  marginTop: "8px", 
+                  marginLeft: "8px",
+                  padding: "6px 12px",
+                  backgroundColor:" #6c757d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  center: "right",
+                }}
                 >
                   View Floorplan
                 </button>
@@ -148,8 +183,10 @@ export default function MapView({ selectedFeature, onAddFeature, geoJsonData, ce
           </Marker>
         )
       })
-
-  const busStopMarkers = busstops.map ((feature, index) => {
+  
+    // Bus Marker
+  const busStopMarkers = busstops
+    .map ((feature, index) => {
     const center = getFeatureCenter(feature);
     if(!center) return null;
 
@@ -196,7 +233,7 @@ export default function MapView({ selectedFeature, onAddFeature, geoJsonData, ce
       }
      />
      {busStopMarkers}
-      {buildingMarkers}
+    {buildingMarkers}
 
       {selectedFeature && <ZoomFeature feature={selectedFeature} />}
     </MapContainerStyled>
