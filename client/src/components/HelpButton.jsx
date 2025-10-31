@@ -8,8 +8,6 @@ import styled from 'styled-components';
 import { useState, useEffect } from "react";
 import { QuestionMarkCircleIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-import FrontSizeToggle from "./FontSizeToggle"
-
 // Styled components
 const HelpButtonStyled = styled.button`
   position: fixed;
@@ -30,7 +28,6 @@ const HelpButtonStyled = styled.button`
     background-color: #0056b3;
   }
 `;  
-
 const HelpMenu = styled.div`
   position: fixed;
   bottom: 80px;
@@ -45,7 +42,6 @@ const HelpMenu = styled.div`
 `;  
 const MenuItem = styled.a`
   display: block;
-  border: 1px solid #ffffffff;
   padding: 8px 0;
   color: #007bff;
   text-decoration: none;
@@ -115,9 +111,8 @@ export default function HelpButton() {
             Light/Dark Mode
           </MenuItem>
 
-            <MenuItem >
-              <FrontSizeToggle/>
-
+            <MenuItem  onClick={(toggleDarkMode) => {document.body.classList.toggle('large-font');}}>
+            Toggle Large Font
             </MenuItem>
             <MenuItem  onClick={() => {document.body.classList.toggle('high-contrast');}}>
             Toggle High Contrast
