@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import styled from "styled-components";
 import RouteSearchBar from './RouteSearchBar';
 import DestinationCard from './DestinationCard';
@@ -46,7 +46,7 @@ const StartRouteButton = styled.button`
 
 `;
 
-export default function RoutePlanner( {onSelectFeature}) {
+export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureConsumed} ) {
     // Track which step the user is on: "start", "end", or "done"
     const [step, setStep] = useState("start");
 
@@ -56,7 +56,10 @@ export default function RoutePlanner( {onSelectFeature}) {
 
     //const [selectedFeature, setSelectedFeature] = useState(null);
 
-    const handleSelectBuilding = (building) => {
+    const handleSelectBuilding = useCallback((building) => {
+        if(!building) {
+            return;
+        }
         if(step === "start") {
             setStartDestination(building);
             setStep("end");
@@ -64,8 +67,10 @@ export default function RoutePlanner( {onSelectFeature}) {
             setEndDestination(building);
             setStep("done");
         }
-        onSelectFeature(building);
-    };
+        if (onSelectFeature) {
+            onSelectFeature(building);
+        }
+    }, [onSelectFeature, step]);
 
     // Resets both destinations and restarts planner from the "start" step.
     const resetRoute = () => {
@@ -73,6 +78,22 @@ export default function RoutePlanner( {onSelectFeature}) {
         setEndDestination(null);
         setStep("start");
     };
+
+    useEffect(() => {
+        if (!addFeature) {
+            return;
+        }
+
+        if (startDestination && endDestination) {
+            return;
+        }
+
+        handleSelectBuilding(addFeature);
+        if (onFeatureConsumed) {
+            onFeatureConsumed();
+        }
+    }, [addFeature, handleSelectBuilding, onFeatureConsumed, startDestination, endDestination]);
+
 
     return(
         <div style={{ position: "relative", paddingBottom:"80px"}}>
@@ -170,3 +191,6 @@ export default function RoutePlanner( {onSelectFeature}) {
         </div>
     );
 }
+
+
+
