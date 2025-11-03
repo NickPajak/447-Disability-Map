@@ -27,10 +27,16 @@ const MapContainerStyled = styled(MapContainer)`
 `;
 
 
-// Base Map Tile Layer
-const tileLayer = {
+// Light Base Map Tile Layer
+const lightTileLayer = {
   url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+};
+
+// Dark Base Map Tile Layer
+const darkTileLayer = {
+  url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  attribution: '&copy; <a href="https://www.carto.com/">CARTO</a> contributors &copy; OpenStreetMap'
 };
 
 //return center of the building
@@ -73,7 +79,7 @@ function ZoomFeature({feature}) {
 const hiddenTypes = ["bridge", "deck", "Loading Dock"];
 
 
-export default function MapView({ selectedFeature, onAddFeature, geoJsonData, center = defaultCenter, zoom = 17 }) {
+export default function MapView({ selectedFeature, onAddFeature, darkMode, geoJsonData, center = defaultCenter, zoom = 17 }) {
   //Load geoJsonData 
   const { buildings, loading: buildingsLoading } = useBuildingGeoJSONData();
   const { busstops, loading: busstopsLoading } = useBusStopGeoJSONData();
@@ -86,20 +92,21 @@ export default function MapView({ selectedFeature, onAddFeature, geoJsonData, ce
   }
 
   const buildingStyle = {
-    color: '#6e75817c',
-    weight: 2,
+    color: darkMode ? '#a8a8a8ff' : '#6e75817c',
+    weight: 1,
+    fillColor: darkMode ? '#ffffffff' : '#6e75817c',
     fillOpacity: 0.3
   };
 
   const highwayStyle = {
-    color: '#7a8289fc',
+    color: '#fdac153d',
     weight: 3,
     opacity: 0.9
   };
 
   const busstopStyle = {
     radius: 6,
-    fillColor: '#ff5e00', 
+    fillColor: '#fdb515', 
     color: '#000000',   
     weight: 1,
     opacity: 1,
@@ -218,20 +225,20 @@ export default function MapView({ selectedFeature, onAddFeature, geoJsonData, ce
 
   return (
     <MapContainerStyled center={center} zoom={zoom} scrollWheelZoom={true}>
-     <TileLayer url={tileLayer.url} attribution={tileLayer.attribution} />
-
-    <GeoJSON
-    data={highways}
-    style={() => ({...highwayStyle})}
+     <TileLayer
+      url={darkMode ? darkTileLayer.url : lightTileLayer.url}
+      attribution={darkMode ? darkTileLayer.attribution : lightTileLayer.attribution}
     />
 
 
-      <GeoJSON
-      data={busstops}
-      pointToLayer={(feature, latlng) =>
-        L.circleMarker(latlng, busstopStyle)
-      }
-     />
+    <GeoJSON data={highways} style={() => ({...highwayStyle})} />
+    <GeoJSON data={buildings.filter(
+      (feature) => !hiddenTypes.includes(feature.properties.name?.toLowerCase())
+    )}
+    style={() => ({...buildingStyle})} />
+
+    <GeoJSON data={busstops} style={() => ({...busstopStyle})} pointToLayer={(feature, latlng) => L.circleMarker(latlng, busstopStyle)}/>
+     
      {busStopMarkers}
     {buildingMarkers}
 
