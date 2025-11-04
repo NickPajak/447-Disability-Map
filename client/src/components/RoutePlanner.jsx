@@ -27,7 +27,11 @@ const Title = styled.h2`
   margin-bottom: 1rem;
   font-size: 1.8rem;
   padding: 5px;
-  color: #000000;
+  color: ${props => props.theme.routePlannerText};
+`;
+
+const WelcomeText = styled.h2`
+    color: ${props => props.theme.routePlannerText};
 `;
 
 const StartRouteButton = styled.button`
@@ -44,6 +48,18 @@ const StartRouteButton = styled.button`
         color: #fdb515;
     }
 
+`;
+
+const StartIcon = styled(HomeIcon)`
+    width: 28px;
+    height: 28px;
+    color: ${props => props.theme.startIconColor};
+`;
+
+const MapIcon = styled(MapPinIcon)`
+    width: 28px;
+    height: 28px;
+    color: ${props => props.theme.startIconColor};
 `;
 
 export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureConsumed} ) {
@@ -108,27 +124,28 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
 
             {/* if there's no place added to route, add default welcome text*/}
             {!startDestination && !endDestination && (
-                <div
-                    style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "200px", 
-                    backgroundColor: "rgba(253, 180, 21, 0)", 
-                    borderRadius: "12px",
-                    marginBottom: "16px",
-                    textAlign: "center",
-                    color: "black",
-                    fontSize: "1.2rem",
-                    fontWeight: "700",
-                    gap: "10px",
-                    }}
-                >
-                    <MapPinIcon style={{width: '50px', height: '50px', color: '#fdb515'}} />
-                    <div>Your path, made easier. </div>
-                    <div>Begin by adding your current location. </div>
-                </div>
+                <WelcomeText>
+                    <div
+                        style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "200px", 
+                        backgroundColor: "rgba(253, 180, 21, 0)", 
+                        borderRadius: "12px",
+                        marginBottom: "16px",
+                        textAlign: "center",
+                        fontSize: "1.2rem",
+                        fontWeight: "700",
+                        gap: "10px",
+                        }}
+                    >
+                        <MapPinIcon style={{width: '50px', height: '50px', color: '#fdb515'}} />
+                        <div>Your path, made easier. </div>
+                        <div>Begin by adding your current location. </div>
+                    </div>
+                </WelcomeText>
             )}
 
             {/* Show both cards stacked below */}
@@ -136,7 +153,7 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
                 {startDestination && (
                     <CardRow>
                         <IconWrapper style={{ marginTop: "8px"}}>
-                            <HomeIcon style={{width: "28px", height: "28px", color: 'black'}} />
+                            <StartIcon />
                         </IconWrapper>
                         
                 <DestinationCard
@@ -150,7 +167,7 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
                     <>  
                         <CardRow>
                             <IconWrapper>
-                                <MapPinIcon style={{ width: "28px", height: "28px", color: 'black'}} />
+                                <MapIcon />
                             </IconWrapper>
                             <DestinationCard
                             label="End"

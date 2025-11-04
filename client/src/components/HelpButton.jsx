@@ -36,8 +36,9 @@ const HelpMenu = styled.div`
   bottom: 80px;
   right: 20px;
   width: 300px;
-  background-color: white;
-  border: 1px solid #ccc;
+  background-color: ${props => props.theme.helpMenuBg};
+  color: ${props => props.theme.helpMenuText};
+  border: none;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   padding: 16px;
@@ -45,9 +46,9 @@ const HelpMenu = styled.div`
 `;  
 const MenuItem = styled.a`
   display: block;
-  border: 1px solid #ffffffff;
+  border: none;
   padding: 8px 0;
-  color: #007bff;
+  color: ${props => props.theme.linkText};
   text-decoration: none;
   &:hover {
     text-decoration: underline;
@@ -62,22 +63,31 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
+const CloseIcon = styled(XMarkIcon)`
+  width: 20px;
+  height: 20px;
+  color: ${props => props.theme.closeButtonText};
+`;
 
 
-export default function HelpButton() {
+
+export default function HelpButton({ darkMode, toggleDarkMode}) {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   
+  // Light/dark mode useEffect
+  useEffect(() => {
+    if(darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
+
+
+
   const toggleHelpMenu = () => {
     setIsHelpOpen(!isHelpOpen);
   };  
-
-
-  const toggleDarkMode = () => {
-    setDarkMode = !darkMode;
-    document.body.classList.toggle('dark-mode');
-    
-  };
 
   const toggleLargeFont = () => {
     document.body.classList.toggle('large-font');
@@ -90,14 +100,14 @@ export default function HelpButton() {
   return (
     <>
       <HelpButtonStyled onClick={toggleHelpMenu} aria-label="Help"> 
-        <QuestionMarkCircleIcon style={{ width: "30px", height: "30px", color: "white" }} />
+        <QuestionMarkCircleIcon style={{ width: "30px", height: "30px", color: "white"}} />
       </HelpButtonStyled>
 
 
       {isHelpOpen && (
         <HelpMenu>
           <CloseButton onClick={toggleHelpMenu} aria-label="Close Help Menu">
-            <XMarkIcon style={{ width: "20px", height: "20px", color: "black" }} />
+            <CloseIcon />
           </CloseButton>
             <h3>Help Menu</h3>
           <p>Welcome to the Accessibility Navigation App! Here are some tips to get you started:</p>
@@ -111,8 +121,8 @@ export default function HelpButton() {
             Submit Feedback
           </MenuItem>
 
-          <MenuItem  onClick={() => {document.body.classList.toggle('dark-mode');}}>
-            Light/Dark Mode
+          <MenuItem  onClick={toggleDarkMode}>
+            {darkMode ? "Switch to Light Mode": "Switch to Dark Mode"}
           </MenuItem>
 
             <MenuItem >

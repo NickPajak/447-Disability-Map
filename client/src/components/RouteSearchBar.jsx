@@ -28,31 +28,33 @@ const Input = styled.input`
   padding: 0.5rem;
   border: none;
   outline: none;
-  background-color: #c7c8ca;
-  color: black;
+  background-color: ${props => props.theme.searchBarInputBg};
+  color: ${props => props.theme.searchBarInputColor};
 `;
 
 const Button = styled.button`
   margin-left: 0.5rem;
-  background-color: #e4e4e4ff; 
-  color: black;
+  background-color: ${props => props.theme.searchBarButtonBg}; 
+  color: ${props => props.theme.searchBarButtonText}; 
   padding: 0.5rem 1rem;
   border-radius: 1.375rem;
   border: none;
   cursor: pointer;
 
   &:hover {
-    background-color: #fdb515; 
+    background-color: ${props => props.theme.searchBarButtonHover}; 
+    color: ${props => props.theme.searchBarButtonHoverText}; 
   }
 `;
 const SuggestionBox = styled.ul`
   position: absolute;
   top: 60%;
   left: 0;
-  width: 99.5%;
-  background: #c7c8ca;
+  width: 99.9%;
+  background: ${props => props.theme.searchBarInputBg};
+  color: ${props => props.theme.searchBarInputColor};
   border-radius: 0 0 1rem 1rem;
-  border: 1px solid #c7c8ca;
+  border: 1px solid transparent;
   margin-top: 0.3 rem;
   list-style: none;
   padding: 0;
@@ -62,7 +64,7 @@ const SuggestionBox = styled.ul`
 const SuggestionItem = styled.li`
   // TODO: Add more accessibility information to each item
   padding: 0.5rem 1rem;
-  color: #000000ff;
+  color: ${props => props.theme.searchBarInputColor};
   cursor: pointer;
 
   &:hover {
@@ -74,8 +76,8 @@ const SuggestionItem = styled.li`
 const InputRow = styled.div`
   display: flex;
   align-items: center;
-  background-color: #c7c8ca;
-  border: 1px solid #bebdbdff;
+  background-color: ${props => props.theme.searchBarInputBg};
+  border: 1px solid transparent;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 0.5rem;
   width: 100%;
@@ -142,7 +144,7 @@ export default function RouteSearchBar({ onSelectBuilding, placeholder}) {
             <SuggestionItem key={i} onClick={() => handleSelect(s)}>
               {s.properties.name}
               {acronym && (
-                <span style={{ color: "black", marginLeft: "8px"}}>
+                <span style={{ color: "#a07707ff", marginLeft: "8px"}}>
                   ({acronym})
                 </span>
               )}

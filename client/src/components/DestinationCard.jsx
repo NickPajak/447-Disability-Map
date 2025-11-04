@@ -1,18 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 import { useBuildingMetadata } from "../utils/loadMetadata";
+import { MapPinIcon } from "@heroicons/react/24/solid";
 
 const Card = styled.div`
     position: relative;
     width: 400px;
     height: 280px;
-    background-color: #fdb515;
-    color: white;
+    background-color: ${props => props.theme.cardBg};
+    color: ${props => props.theme.cardText};
     border-radius: 0.75rem;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     border: 2px solid;
-    border-color: #ffffffff;
+    border-color: ${props => props.theme.cardBorder};
 `;
 
 const ImageWrapper = styled.div`
@@ -47,7 +48,7 @@ const Label = styled.span`
     position: absolute;
     top: 120px; /* slightly overlapping image edge */
     left: 6px;
-    background-color: rgba(54, 44, 14, 0.8);
+    background-color: ${props => props.theme.labelBg};
     padding: 6px 12px;
     border-radius: 0.5rem;
     font-weight: 600;
@@ -56,10 +57,9 @@ const Label = styled.span`
     backdrop-filter: blur(4px);
 `;
 
-// TODO: Make this better
 const Acronym = styled.p`
-    background-color: #a67a05;
-    color: #ffffffff;
+    background-color: ${props => props.theme.acronymBg};
+    color: ${props => props.theme.acronymText};
     border-radius: 0.5rem;
     border: none;
     padding: 5px 9px;
@@ -68,8 +68,8 @@ const Acronym = styled.p`
 `;
 const FloorplanButton = styled.button`
     left: 10px;
-    background-color: rgba(59, 59, 59, 1);
-    color: #ffffffff;
+    background-color: ${props => props.theme.buttonBg};
+    color: ${props => props.theme.buttonText};
     border-radius: 1rem;
     border: 1px solid transparent;
     cursor: pointer;
@@ -77,13 +77,11 @@ const FloorplanButton = styled.button`
     width: fit-content;        /* button only as wide as its content */
 
     &:hover {
-        background-color:  #a67a05;
-        color: #ffffffff;
-        border-color: #a07707ff;
+        background-color:  ${props => props.theme.buttonHoverBg};
+        color: ${props => props.theme.buttonHoverText};
+        border-color: ${props => props.theme.buttonHover};
     }
-
 `;
-
 
 export default function DestinationCard({ label, building, onClear}) {
     const metadata = useBuildingMetadata();

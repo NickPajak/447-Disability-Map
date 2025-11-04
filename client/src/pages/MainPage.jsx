@@ -29,7 +29,7 @@ const PageContainer = styled.div`
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-color: #a7a7a7ff;
+    background-color: ${props => props.theme.routePlannerBg};
 `;
 
 const SideBar = styled.div`
@@ -38,9 +38,9 @@ const SideBar = styled.div`
     gap: 1rem;
     width: 440px;
     height: 100%;
-    background-color: #F5F5F5;
+    background-color: ${props => props.theme.routePlannerBg};
     color: white;
-    border-right: 2px solid #F5F5F5;
+    border-right: 2px solid transparent;
     padding: 1rem 1rem 1rem 1rem;
     overflow-y: auto;
     scrollbar-width: none;
@@ -57,7 +57,7 @@ const MapContainer = styled.div`
     width: calc(100vw - 400px);
 `;
 
-export default function MainPage() {
+export default function MainPage({darkMode}) {
     const [selectedFeature, setSelectedFeature] = useState(null);
     const [featureToAdd, setFeatureToAdd] = useState(null);
 
@@ -85,6 +85,7 @@ export default function MainPage() {
                     <MapView
                         selectedFeature={selectedFeature}
                         onAddFeature={handleAddFeature}
+                        darkMode={darkMode}
                     />
                 </MapContainer>
             </PageContainer>

@@ -1,8 +1,10 @@
 // main app component
-import React from 'react';
+import {React, useState} from 'react';
 import MainPage from './pages/MainPage';
 import HelpButton from './components/HelpButton';
-import styled from 'styled-components';
+import {styled, ThemeProvider} from 'styled-components';
+import {lightTheme, darkTheme} from './styles/theme';
+
 
 
 const AppContainer = styled.div`
@@ -23,14 +25,18 @@ const TopRightImage = styled.img`
 `;
 
 function App() {
+    const [darkMode, setDarkMode] = useState(false);
+    const toggleDarkMode = () => setDarkMode(prev => !prev);
     return (
-      <AppContainer>
-        <TopRightImage src="/assets/LOGO.png" alt="Logo" />
-        <div className="App" style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-          <MainPage />
-          <HelpButton />
-        </div>
-      </AppContainer>
+      <ThemeProvider theme={darkMode ? darkTheme: lightTheme}>
+        <AppContainer>
+          <TopRightImage src="/assets/LOGO.png" alt="Logo" />
+          <div className="App" style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+            <MainPage darkMode={darkMode}/>
+            <HelpButton darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+          </div>
+        </AppContainer>
+      </ThemeProvider>
     
     );
 }

@@ -12,14 +12,14 @@ const ToggleContainer = styled.div`
 const ToggleButton = styled.button`
     border: none;
     border-radius: 30px;
-    background-color: #cececeff;
-    color: white;
+    background-color: ${props => props.theme.toggleButtonBg};
+    color: ${props => props.theme.toggleButtonText};
     cursor: pointer;
     font-size: 16px;
     padding: 6px 12px;
 
     &:hover {
-        background-color: #0056b3;
+        background-color: ${props => props.theme.toggleButtonHover};
     }
 `;
 
