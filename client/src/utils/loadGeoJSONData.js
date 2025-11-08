@@ -61,7 +61,7 @@ export function useHighwayGeoJSONData() {
     const [highways, setHighways] = useState([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        fetch("/geojson_data/umbc_highway_v1.geojson")
+        fetch("/geojson_data/umbc_highway_v2.geojson")
         .then((res) => res.json())
         .then((data) => {
             setHighways(data.features || []);
