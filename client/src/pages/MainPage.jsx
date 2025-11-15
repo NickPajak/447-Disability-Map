@@ -60,6 +60,7 @@ const MapContainer = styled.div`
 export default function MainPage({darkMode}) {
     const [selectedFeature, setSelectedFeature] = useState(null);
     const [featureToAdd, setFeatureToAdd] = useState(null);
+    const [routeRequest, setRouteRequest] = useState(null);
 
     const handleAddFeature = (feature) => {
         setFeatureToAdd(feature);
@@ -68,6 +69,10 @@ export default function MainPage({darkMode}) {
 
     const handleFeatureConsumed = () => {
         setFeatureToAdd(null);
+    };
+
+    const handleRouteRequest = (startId, endId) => {
+        setRouteRequest({startId, endId});
     };
 
     return (
@@ -79,6 +84,8 @@ export default function MainPage({darkMode}) {
                         onSelectFeature={setSelectedFeature}
                         addFeature={featureToAdd}
                         onFeatureConsumed={handleFeatureConsumed}
+                        onRouteRequest={handleRouteRequest}
+
                     />
                 </SideBar>
                 <MapContainer>
@@ -86,6 +93,7 @@ export default function MainPage({darkMode}) {
                         selectedFeature={selectedFeature}
                         onAddFeature={handleAddFeature}
                         darkMode={darkMode}
+                        routeRequest={routeRequest}
                     />
                 </MapContainer>
             </PageContainer>
