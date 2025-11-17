@@ -1,5 +1,6 @@
 import MapView from "../components/MapView";
 import RoutePlanner from "../components/RoutePlanner";
+import FloorplanViewer from "../components/FloorplanViewer";
 import styled from "styled-components";
 import React, { useState } from 'react';
 import { createGlobalStyle } from "styled-components";
@@ -61,6 +62,11 @@ export default function MainPage({darkMode}) {
     const [selectedFeature, setSelectedFeature] = useState(null);
     const [featureToAdd, setFeatureToAdd] = useState(null);
 
+    // Interior View
+    const [viewMode, setViewMode] = useState("map");
+    const [activeBuilding, setActiveBuilding] = useState(null);
+
+
     const handleAddFeature = (feature) => {
         setFeatureToAdd(feature);
         setSelectedFeature(feature);
@@ -79,14 +85,29 @@ export default function MainPage({darkMode}) {
                         onSelectFeature={setSelectedFeature}
                         addFeature={featureToAdd}
                         onFeatureConsumed={handleFeatureConsumed}
+
+                        onShowFloorplan={(building) => {
+                            setActiveBuilding(building);
+                            setViewMode("floorplan");
+                        }}
                     />
                 </SideBar>
                 <MapContainer>
+                    {viewMode === "map" && (
                     <MapView
                         selectedFeature={selectedFeature}
                         onAddFeature={handleAddFeature}
                         darkMode={darkMode}
                     />
+                    )}
+
+                    {viewMode === "floorplan" && activeBuilding && (
+                        <FloorplanViewer 
+                            building={activeBuilding} 
+                            onBack={() => setViewMode("map")}
+                            />
+                        
+                    )}
                 </MapContainer>
             </PageContainer>
         </>

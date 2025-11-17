@@ -62,7 +62,7 @@ const MapIcon = styled(MapPinIcon)`
     color: ${props => props.theme.startIconColor};
 `;
 
-export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureConsumed} ) {
+export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureConsumed, onShowFloorplan} ) {
     // Track which step the user is on: "start", "end", or "done"
     const [step, setStep] = useState("start");
 
@@ -159,6 +159,7 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
                 <DestinationCard
                     label="Start"
                     building={startDestination}
+                    onShowFloorplan={onShowFloorplan}
                 />
                 </CardRow>
                 )}
@@ -172,6 +173,7 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
                             <DestinationCard
                             label="End"
                             building={endDestination}
+                            onShowFloorplan={onShowFloorplan}
                             />
                         </CardRow>
                     </>
