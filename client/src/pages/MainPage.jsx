@@ -62,6 +62,9 @@ export default function MainPage({darkMode}) {
     const [featureToAdd, setFeatureToAdd] = useState(null);
     const [routeRequest, setRouteRequest] = useState(null);
 
+    // Welcome Message
+    const [showAnnouncement, setShowAnnouncement] = useState(true);
+
     const handleAddFeature = (feature) => {
         setFeatureToAdd(feature);
         setSelectedFeature(feature);
@@ -75,6 +78,7 @@ export default function MainPage({darkMode}) {
         setRouteRequest({startId, endId});
     };
 
+
     return (
         <>
             <GlobalStyle />
@@ -85,7 +89,6 @@ export default function MainPage({darkMode}) {
                         addFeature={featureToAdd}
                         onFeatureConsumed={handleFeatureConsumed}
                         onRouteRequest={handleRouteRequest}
-
                     />
                 </SideBar>
                 <MapContainer>
@@ -96,6 +99,62 @@ export default function MainPage({darkMode}) {
                         routeRequest={routeRequest}
                     />
                 </MapContainer>
+                {showAnnouncement && (
+                    <div style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        width: "100vw",
+                        height: "100vh",
+                        background: "rgba(0,0,0,0.5)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 9999
+                    }}>
+                        <div style={{
+                            width: "560px",
+                            maxWidth: "90vw",
+                            padding: "24px",
+                            borderRadius: "14px",
+                            background: "#ffffff",
+                            color: "#000",
+                            boxShadow: "0 6px 14px rgba(0,0,0,0.25)"
+                        }}>
+                            <h2 style={{ marginTop: 0 }}>Announcements</h2>
+
+                            <div>
+                                <h3>🚧 Alerts</h3>
+                                <p>Construction around <strong>Sherman</strong> and <strong>Sondheim</strong>, so some routes may shift.</p>
+
+                                <h3>♿ Accessibility Notes</h3>
+                                <p>Outdoor accessible routes are open during school hours.</p>
+                                <p>Indoor 24/7 routes need clearance once buildings lock.</p>
+
+                                <h3>⚠️ Quick Reminder</h3>
+                                <p>This app doesn’t replace official emergency or evacuation instructions.</p>
+                            </div>
+
+                            <button
+                                onClick={() => setShowAnnouncement(false)}
+                                style={{
+                                    marginTop: "20px",
+                                    padding: "12px",
+                                    width: "100%",
+                                    borderRadius: "10px",
+                                    border: "none",
+                                    background: "#333",
+                                    color: "white",
+                                    fontSize: "1rem",
+                                    cursor: "pointer"
+                                }}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                )}
+
             </PageContainer>
         </>
     );
