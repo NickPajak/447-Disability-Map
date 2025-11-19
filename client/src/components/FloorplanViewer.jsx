@@ -3,6 +3,7 @@ import { MapContainer, ImageOverlay } from "react-leaflet";
 import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 import FloorplanNavigator from "./FloorplanNavigator";
+import { blankIcon } from "../utils/leafletIcons";
 
 export default function FloorplanViewer({ building, onBack }) {
   const id = building.properties.building_id;
@@ -19,6 +20,7 @@ export default function FloorplanViewer({ building, onBack }) {
     [0, 0],           // bottom-left
     [imgHeight, imgWidth]  // top-right
   ];
+  
 
   useEffect(() => {
     setGeojsonData(null);
@@ -56,6 +58,11 @@ export default function FloorplanViewer({ building, onBack }) {
       .catch(() => setGeojsonData(null));
   }, [floor, numericId]);
 
+  useEffect(() => {
+    // override default icon for this map session
+    L.Marker.prototype.options.icon = blankIcon;
+  }, []);
+
   return (
     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", background: "#222", color: "white" }}>
       <div style={{ padding: "10px" }}>
@@ -82,7 +89,8 @@ export default function FloorplanViewer({ building, onBack }) {
           ))}
         </div>
       </div>
-
+      
+      
       <div style={{ flex: 1 }}>
         <MapContainer
           key={floor}
@@ -93,7 +101,7 @@ export default function FloorplanViewer({ building, onBack }) {
           minZoom={-3}
         >
           <ImageOverlay url={imageSrc} bounds={bounds} />
-          {geojsonData && <FloorplanNavigator geojsonData={geojsonData} />}
+          {geojsonData && <FloorplanNavigator geojsonData={geojsonData} imgHeight={imgHeight} />}
         </MapContainer>
       </div>
     </div>

@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { GeoJSON, Marker, Polyline, useMapEvents } from 'react-leaflet';
+import { GeoJSON, CircleMarker, Polyline, useMapEvents, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { buildGraphFromGeojson, graphToAdj } from '../utils/indoorGraph';
 import { dijkstra, pathIdsToCoords } from '../utils/indoorRouteSearch';
 
-/**
- * Expects geojsonData in same coordinate space as the ImageOverlay (pixel coords).
- * Leaflet markers/polylines require [lat, lng] (we treat as [y, x] for CRS.Simple).
- */
 export default function FloorplanNavigator({ geojsonData }) {
   const [graph, setGraph] = useState(null);
   const [adj, setAdj] = useState(null);
@@ -24,26 +20,6 @@ export default function FloorplanNavigator({ geojsonData }) {
     setEndNode(null);
     setRouteCoords(null);
   }, [geojsonData]);
-
-  // Swap [x, y] → [y, x] for Leaflet
-  const convertGeoJSONToLeaflet = (gj) => ({
-    ...gj,
-    features: gj.features.map(f => ({
-      ...f,
-      geometry: {
-        ...f.geometry,
-        coordinates: convertCoords(f.geometry.coordinates, f.geometry.type)
-      }
-    }))
-  });
-
-  const convertCoords = (coords, type) => {
-    if (type === "Point") return [coords[1], coords[0]];
-    if (type === "LineString" || type === "MultiPoint") return coords.map(p => [p[1], p[0]]);
-    if (type === "Polygon" || type === "MultiLineString") return coords.map(ring => ring.map(p => [p[1], p[0]]));
-    if (type === "MultiPolygon") return coords.map(poly => poly.map(ring => ring.map(p => [p[1], p[0]])));
-    return coords;
-  };
 
   function MapClicker() {
     useMapEvents({
@@ -99,19 +75,35 @@ export default function FloorplanNavigator({ geojsonData }) {
         />
       )}
 
-      {/* Door markers */}
-      {graph && Object.values(graph.nodes).map(n =>
-        n.meta?.doorIndex !== undefined ? (
-          <Marker
+      {/* Nodes as circle markers */}
+      {graph && Object.values(graph.nodes).map(n => {
+        if (!n.coord || !Number.isFinite(n.coord[0]) || !Number.isFinite(n.coord[1])) return null;
+
+        const latlng = [n.coord[1], n.coord[0]]; // [lat, lng]
+        let color = "blue";
+        if (n.meta?.doorIndex !== undefined) color = "green";
+        else if (n.meta?.feature_type === "elevator") color = "purple";
+
+        return (
+          <CircleMarker
             key={n.id}
-            position={[n.coord[1], n.coord[0]]}
-            icon={L.icon({
-              iconUrl: "/assets/door-icon.png",
-              iconSize: [20, 20]
-            })}
-          />
-        ) : null
-      )}
+            center={latlng}
+            radius={6}
+            fillColor={color}
+            color="#000"
+            weight={1}
+            fillOpacity={0.9}
+          >
+            <Popup>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <div>ID: {n.id}</div>
+                <button onClick={() => setStartNode(n.id)}>Set Start</button>
+                <button onClick={() => setEndNode(n.id)}>Set End</button>
+              </div>
+            </Popup>
+          </CircleMarker>
+        );
+      })}
 
       {/* Route polyline */}
       {routeCoords && (
@@ -123,7 +115,7 @@ export default function FloorplanNavigator({ geojsonData }) {
         />
       )}
 
-      {/* simple UI */}
+      {/* Simple UI */}
       <div style={{ position: 'absolute', right: 12, top: 12, zIndex: 999 }}>
         <div style={{ background: 'rgba(0,0,0,0.6)', color: 'white', padding: 8, borderRadius: 6 }}>
           <div>Start: {startNode || '—'}</div>
