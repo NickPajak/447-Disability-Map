@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { MapContainer, ImageOverlay, GeoJSON } from "react-leaflet";
+import { fixLooseConnections } from "../utils/indoorGraph";
+import { findRoute } from '../utils/geojsonRouteSearch';
 import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
 

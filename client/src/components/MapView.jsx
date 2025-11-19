@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import styled from "styled-components";
 import L from 'leaflet';
-import {useBuildingGeoJSONData, useBusStopGeoJSONData,useHighwayGeoJSONData } from '../utils/loadGeoJSONData';
+import {useBuildingGeoJSONData, useBusStopGeoJSONData,useHighwayGeoJSONData, useEntranceGeoJSONData } from '../utils/loadGeoJSONData';
 import { useBuildingMetadata } from '../utils/loadMetadata';
+import { findRoute } from '../utils/geojsonRouteSearch';
+import { Polyline } from 'react-leaflet';
 
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
@@ -79,15 +81,46 @@ function ZoomFeature({feature}) {
 const hiddenTypes = ["bridge", "deck", "Loading Dock"];
 
 
-export default function MapView({ selectedFeature, onAddFeature, darkMode, geoJsonData, center = defaultCenter, zoom = 17 }) {
+export default function MapView({ selectedFeature, onAddFeature,routeRequest ,darkMode, geoJsonData, center = defaultCenter, zoom = 17 }) {
   //Load geoJsonData 
   const { buildings, loading: buildingsLoading } = useBuildingGeoJSONData();
   const { busstops, loading: busstopsLoading } = useBusStopGeoJSONData();
   const { highways, loading: highwaysLoading } = useHighwayGeoJSONData();
-
+  const { entrances, loading: entrancesLoading } = useEntranceGeoJSONData();
+  const [route, setRoute] = useState(null);
   const metadata = useBuildingMetadata();
-  
-  if (buildingsLoading || busstopsLoading || highwaysLoading || !metadata) {
+
+    // Handle route search
+  useEffect(() => {
+  if (!routeRequest) return;
+  if (!highways.length || !entrances.length || !busstops.length) return;
+
+  console.log("MapView received routeRequest:", routeRequest);
+
+  const startId = routeRequest.startId;
+  const endId = routeRequest.endId;
+
+  // IMPORTANT: wrap GeoJSON arrays into FeatureCollection
+  const highwayFC = { type: "FeatureCollection", features: highways };
+  const entranceFC = { type: "FeatureCollection", features: entrances };
+  const busstopFC = { type: "FeatureCollection", features: busstops };
+
+  const result = findRoute({
+    startBuildingId: startId,
+    endBuildingId: endId,
+    entrances: entranceFC,
+    highways: highwayFC,
+    busstops: busstops.features || busstops,
+    metadata: metadata
+  });
+
+  console.log("Route result = ", result);
+
+  setRoute(result);
+}, [routeRequest, highways, entrances, busstops, metadata]);
+
+
+  if (buildingsLoading || busstopsLoading || highwaysLoading || !metadata  || entrancesLoading) {
     return <div>Loading map data...</div>;
   }
 
@@ -223,6 +256,7 @@ export default function MapView({ selectedFeature, onAddFeature, darkMode, geoJs
   });
     
 
+
   return (
     <MapContainerStyled center={center} zoom={zoom} scrollWheelZoom={true}>
      <TileLayer
@@ -230,8 +264,6 @@ export default function MapView({ selectedFeature, onAddFeature, darkMode, geoJs
       attribution={darkMode ? darkTileLayer.attribution : lightTileLayer.attribution}
     />
 
-
-    <GeoJSON data={highways} style={() => ({...highwayStyle})} />
     <GeoJSON data={buildings.filter(
       (feature) => !hiddenTypes.includes(feature.properties.name?.toLowerCase())
     )}
@@ -239,10 +271,22 @@ export default function MapView({ selectedFeature, onAddFeature, darkMode, geoJs
 
     <GeoJSON data={busstops} style={() => ({...busstopStyle})} pointToLayer={(feature, latlng) => L.circleMarker(latlng, busstopStyle)}/>
      
-     {busStopMarkers}
+    {busStopMarkers}
     {buildingMarkers}
 
-      {selectedFeature && <ZoomFeature feature={selectedFeature} />}
+    {selectedFeature && <ZoomFeature feature={selectedFeature} />}
+    
+    <GeoJSON data={highways} style={() => ({...highwayStyle})} />
+    {route?.route_coords && (
+    <Polyline
+      positions={route.route_coords.map(([lng, lat]) => [lat, lng])}
+     color="red"
+      weight={5}
+    />
+    )}
+    
     </MapContainerStyled>
   );
+
+
 }

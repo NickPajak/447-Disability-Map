@@ -62,7 +62,7 @@ const MapIcon = styled(MapPinIcon)`
     color: ${props => props.theme.startIconColor};
 `;
 
-export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureConsumed, onShowFloorplan} ) {
+export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureConsumed, onRouteRequest, onShowFloorplan} ) {
     // Track which step the user is on: "start", "end", or "done"
     const [step, setStep] = useState("start");
 
@@ -198,14 +198,33 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
             )}
             {/*TODO: Integrate button with route planning*/}
             {startDestination && endDestination && (
-                <StartRouteButton style={{
-                position: "absolute",
-                bottom: "20px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                }}>
-                    <h3>Start Route</h3>
-                </StartRouteButton>
+<StartRouteButton 
+style={{
+    position: "absolute",
+    bottom: "20px",
+    left: "50%",
+    transform: "translateX(-50%)",
+}}
+
+onClick={ () => {
+    if (startDestination && endDestination) {
+        onRouteRequest(
+             startDestination.properties.building_id || startDestination.properties.id,
+
+             endDestination.properties.building_id || endDestination.properties.id,
+        );
+        console.log("START ROUTE:",
+            startDestination?.properties?.building_id,
+            startDestination?.properties?.id,
+            endDestination?.properties?.building_id,
+            endDestination?.properties?.id
+        );
+    }
+}}
+>
+
+    <h3>Start Route</h3>
+</StartRouteButton>
             )}
         </div>
     );
