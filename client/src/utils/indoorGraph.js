@@ -1,56 +1,62 @@
 
-export function fixLooseConnections(geojson, tolerance = 3) {
+function euclidean(a, b) {
+    const dx = a[0] - b[0];
+    const dy = a[1] - b[1];
+    return Math.sqrt(dx * dx + dy * dy);
+}
 
-    const features = geojson.features.filter(f => f.geometry.type === "MultiLineString");
+let idCounter = 0;
+function nextId(prefix = 'n') { return `${prefix}_${++idCounter}`; }
 
-    let endpoints = [];
-    features.forEach((f, i) => {
-        const coords = f.geometry.coordinates;
-        const start = coords[0];
-        const end = coords[coords.length - 1];
-        endpoints.push({ pt: start, featureIndex: i, coordIndex: 0});
-        endpoints.push({ pt: end, featureIndex: i, coordIndex: coords.length - 1});
-    });
+// Fix for multiline string
 
-    const dist = (a, b) => Math.sqrt((a[0] - b[0]) ** 2 (a[1] - b[1]) ** 2);
+export function buildGraphFromGeojson(geojson, opts = {}) {
+    const maxConnectDist = opts.maxConnectDist ?? 40;
+    const corridors = geojson.features.filter(f => f.properties?.feature_type === 'corridor' && f.geometry.type === 'MultiLineString');
+    const doors = geojson.features.filter(f => f.properties?.feature_type === 'door' && f.geometry.type === 'Point');
 
-    const groups = [];
-    const used = new Set();
+    const nodes = {};
+    const edges = [];
 
-    for (let i = 0; i < endpoints.length; i++) {
-        if(used.has(i)) continue;
-
-        const group = [endpoints[i]];
-        used.add(i);
-
-        for (let j = i + 1; j < endpoints.length; j++) {
-            if(used.has(j)) continue;
-            if(dist(endpoints[i].pt, endpoints[j].pt) <= tolerance) {
-                group.push(endpoints[j]);
-                used.add(j);
+    corridors.forEach((c, ci) => {
+        const coords = c.geometry.coordinates;
+        let prevId = null;
+        coords.forEach((pt, i) => {
+            const nodeId = nextId('c');
+            nodes[nodeId] = { id: nodeId, coord: pt.slice(), meta: { corridorIndex: ci, vertexIndex: i } };
+            if(prevId) {
+                const w = euclidean(nodes[prevId].coord, pt);
+                edges.push({u: prevId, v: nodeId, w});
+                edges.push({ u: nodeId, v: prevId, w});
             }
-        }
-        groups.push(group);
-    }
-
-    const snapped = groups.map(group => {
-        const xs = group.map(g => g.pt[0]);
-        const ys = group.map(g => g.pt[1]);
-        return [avg(xs), avg(ys)];
-    });
-
-    function avg(arr) {
-        return arr.reduce((a,b) => a + b, 0) / arr.length;
-    }
-
-    const snappedGeo = JSON.parsre(JSON.stringify(geojson));
-    groups.forEach((group, gIndex) => {
-        const snappedPt = snapped[gIndex];
-
-        group.forEach(( {featureIndex, coordIndex}) => {
-            snappedGeo.feature[featureIndex].geometry.coordinates[coordIndex] = snappedPt;
+            prevId = nodeId;
         });
     });
-    return snappedGeo;
 
+    doors.forEach((d, di) => {
+        const doorId = nextId('d');
+        const coord = d.geometry.coordinates.slice();
+        nodes[doorId] = { id: doorId, coord, meta: { doorIndex: di, properties: d.properties } };
+        
+        let best = null;
+        Object.values(nodes).forEach(n => {
+            if(n.id === doorId) return;
+
+            const dist = euclidean(n.coord, coord);
+            if(dist <= maxConnectDist && (!best || dist < best.dist)) best = { node: n, dist};
+        });
+        if(best) {
+            edges.push({ u: doorId, v: best.node.id, w: best.dist});
+            edges.push({ u: best.node.id, v: doorId, w: best.dist });
+        }
+    });
+
+    return { nodes, edges };
+}
+
+export function graphToAdj(nodes, edges) {
+    const adj = {};
+    Object.keys(nodes).forEach(k => adj[k] = []);
+    edges.forEach(e => { adj[e.u].push({to: e.v, w: e.w}); });
+    return adj;
 }

@@ -81,7 +81,7 @@ function ZoomFeature({feature}) {
 const hiddenTypes = ["bridge", "deck", "Loading Dock"];
 
 
-export default function MapView({ selectedFeature, onAddFeature,routeRequest ,darkMode, geoJsonData, center = defaultCenter, zoom = 17 }) {
+export default function MapView({ selectedFeature, onAddFeature,routeRequest ,darkMode, geoJsonData, center = defaultCenter, zoom = 17, onShowFloorplan }) {
   //Load geoJsonData 
   const { buildings, loading: buildingsLoading } = useBuildingGeoJSONData();
   const { busstops, loading: busstopsLoading } = useBusStopGeoJSONData();
@@ -201,23 +201,21 @@ export default function MapView({ selectedFeature, onAddFeature,routeRequest ,da
                 </button>
 
                 <button
-                onclick="
-                // **********View floor plan function to be implemented************
-                "
-                style={{
-                  marginTop: "8px", 
-                  marginLeft: "8px",
-                  padding: "6px 12px",
-                  backgroundColor:" #6c757d",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  center: "right",
-                }}
+                    onClick={() => onShowFloorplan(feature)}
+                    style={{
+                      marginTop: "8px",
+                      marginLeft: "8px",
+                      padding: "6px 12px",
+                      backgroundColor:" #6c757d",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer"
+                    }}
                 >
                   View Floorplan
                 </button>
+
               </div>
             </Popup>
           </Marker>

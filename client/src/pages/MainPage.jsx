@@ -109,6 +109,11 @@ export default function MainPage({darkMode}) {
                         onAddFeature={handleAddFeature}
                         darkMode={darkMode}
                         routeRequest={routeRequest}
+
+                        onShowFloorplan={(building) => {
+                            setActiveBuilding(building);
+                            setViewMode("floorplan");
+                        }}
                     />
                     )}
 
