@@ -78,9 +78,21 @@ export function buildGraphFromGeojson(geojson, opts = {}) {
 
 export function graphToAdj(nodes, edges) {
   const adj = {};
+
+  // Initialize adjacency list for each node
   Object.keys(nodes).forEach(k => (adj[k] = []));
+
   edges.forEach(e => {
-    adj[e.u].push({ to: e.v, w: e.w });
+    // Only add if both nodes exist
+    if (adj[e.u] && nodes[e.v]) {
+      adj[e.u].push({ to: e.v, w: e.w });
+    } else {
+      console.warn("Skipping edge with missing node:", e);
+    }
   });
+
   return adj;
 }
+
+
+

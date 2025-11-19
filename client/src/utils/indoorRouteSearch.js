@@ -31,6 +31,7 @@ export function dijkstra(adj, startId, endId) {
     let cur = endId;
     while (cur) { path.push(cur); cur = prev[cur]; }
     path.reverse();
+    
     return { path, distance: dist[endId]};
 }
 

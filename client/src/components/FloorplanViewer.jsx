@@ -59,8 +59,11 @@ export default function FloorplanViewer({ building, onBack }) {
   }, [floor, numericId]);
 
   useEffect(() => {
-    // override default icon for this map session
+    const originalIcon = L.Marker.prototype.options.icon;
     L.Marker.prototype.options.icon = blankIcon;
+    return () => {
+      L.Marker.prototype.options.icon = originalIcon;
+    };
   }, []);
 
   return (
