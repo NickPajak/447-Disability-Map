@@ -201,7 +201,7 @@ export default function MapView({ selectedFeature, onAddFeature,routeRequest ,da
                 </button>
 
                 <button
-                onclick="
+                onClick="
                 // **********View floor plan function to be implemented************
                 "
                 style={{
