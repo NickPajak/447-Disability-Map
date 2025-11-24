@@ -17,10 +17,10 @@ export default function FloorplanNavigator({ geojsonData }) {
     // 1️⃣ Build initial graph
     const g = buildGraphFromGeojson(geojsonData, { maxConnectDist: 1000 }) || { nodes: {}, edges: [] };
   
-    // 2️⃣ Normalize coordinates (take first point if MultiPoint)
-    Object.values(g.nodes).forEach(n => {
-      if (Array.isArray(n.coord?.[0])) n.coord = n.coord[0];
-    });
+    // // 2️⃣ Normalize coordinates (take first point if MultiPoint)
+    // Object.values(g.nodes).forEach(n => {
+    //   if (Array.isArray(n.coord?.[0])) n.coord = n.coord[0];
+    // });
   
     // 3️⃣ Ensure all doors exist as nodes
     geojsonData.features.forEach(f => {
@@ -37,19 +37,19 @@ export default function FloorplanNavigator({ geojsonData }) {
     const doors = Object.values(g.nodes).filter(n => n.id.startsWith('p_'));
   
     // 5️⃣ Connect corridors to nearby corridors
-    for (let i = 0; i < corridors.length; i++) {
-      const c1 = corridors[i];
-      for (let j = i + 1; j < corridors.length; j++) {
-        const c2 = corridors[j];
-        const dx = c1.coord[0] - c2.coord[0];
-        const dy = c1.coord[1] - c2.coord[1];
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist <= 1000) { // adjust distance if needed
-          g.edges.push({ u: c1.id, v: c2.id, w: dist });
-          g.edges.push({ u: c2.id, v: c1.id, w: dist });
-        }
-      }
-    }
+    // for (let i = 0; i < corridors.length; i++) {
+    //   const c1 = corridors[i];
+    //   for (let j = i + 1; j < corridors.length; j++) {
+    //     const c2 = corridors[j];
+    //     const dx = c1.coord[0] - c2.coord[0];
+    //     const dy = c1.coord[1] - c2.coord[1];
+    //     const dist = Math.sqrt(dx * dx + dy * dy);
+    //     if (dist <= 1000) { // adjust distance if needed
+    //       g.edges.push({ u: c1.id, v: c2.id, w: dist });
+    //       g.edges.push({ u: c2.id, v: c1.id, w: dist });
+    //     }
+    //   }
+    // }
   
     // 6️⃣ Snap doors to nearest corridor and add edges
     doors.forEach(door => {
