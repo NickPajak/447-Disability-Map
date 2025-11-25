@@ -73,20 +73,23 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
     //const [selectedFeature, setSelectedFeature] = useState(null);
 
     const handleSelectBuilding = useCallback((building) => {
-        if(!building) {
-            return;
-        }
-        if(step === "start") {
+        if (!building) return;
+
+        if (step === "start") {
             setStartDestination(building);
             setStep("end");
-        } else {
+            onSelectFeature?.(building);
+        } else if (step === "end") {
+            // Don't allow selecting the same building as start
+            if (startDestination && building.properties.building_id === startDestination.properties.building_id) {
+            return; // ignore duplicate
+            }
             setEndDestination(building);
             setStep("done");
+            onSelectFeature?.(building);
         }
-        if (onSelectFeature) {
-            onSelectFeature(building);
-        }
-    }, [onSelectFeature, step]);
+    }, [onSelectFeature, step, startDestination]);
+
 
     // Resets both destinations and restarts planner from the "start" step.
     const resetRoute = () => {
@@ -114,13 +117,15 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
     return(
         <div style={{ position: "relative", paddingBottom:"80px"}}>
             <Title>Campus Compass</Title>
-            <RouteSearchBar 
+            <RouteSearchBar
                 key={step}
                 placeholder={
                     step === "start" ? "Search start destination..." : "Search end destination"
                 }
                 onSelectBuilding={handleSelectBuilding}
+                disabledBuilding={step === "end" ? startDestination : null}
             />
+
 
             {/* if there's no place added to route, add default welcome text*/}
             {!startDestination && !endDestination && (
