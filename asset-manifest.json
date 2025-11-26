@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/447-Disability-Map/static/css/main.2e662a65.css",
+    "main.js": "/447-Disability-Map/static/js/main.d6b2ddfe.js",
+    "index.html": "/447-Disability-Map/index.html",
+    "main.2e662a65.css.map": "/447-Disability-Map/static/css/main.2e662a65.css.map",
+    "main.d6b2ddfe.js.map": "/447-Disability-Map/static/js/main.d6b2ddfe.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2e662a65.css",
+    "static/js/main.d6b2ddfe.js"
+  ]
+}
