@@ -1,6 +1,5 @@
 import MapView from "../components/MapView";
 import RoutePlanner from "../components/RoutePlanner";
-import FloorplanViewer from "../components/FloorplanViewer";
 import styled from "styled-components";
 import React, { useState } from 'react';
 import { createGlobalStyle } from "styled-components";
@@ -117,13 +116,13 @@ export default function MainPage({darkMode}) {
                     />
                     )}
 
-                    {viewMode === "floorplan" && activeBuilding && (
+                    {/* {viewMode === "floorplan" && activeBuilding && (
                         <FloorplanViewer 
                             building={activeBuilding} 
                             onBack={() => setViewMode("map")}
                             />
                         
-                    )}
+                    )} */}
                 </MapContainer>
                 {showAnnouncement && (
                     <div style={{

@@ -1,7 +1,9 @@
 import React from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { useBuildingMetadata } from "../utils/loadMetadata";
 import { MapPinIcon } from "@heroicons/react/24/solid";
+import FloorplanModal from "./FloorplanModal";
 
 const Card = styled.div`
     position: relative;
@@ -85,30 +87,43 @@ const FloorplanButton = styled.button`
 
 export default function DestinationCard({ label, building, onClear, onShowFloorplan}) {
     const metadata = useBuildingMetadata();
+    const [showFloorplan, setShowFloorplan] = useState(false);
+    const [userLocation, setUserLocation] = useState({x: 100, y: 150}); // example coords
     if (!building) return null; // or return a placeholder/loading message
 
     const id = building.properties.building_id;
     const info = metadata[id] || {};
     const imageSrc = `/assets/${id}.jpg`;
 
-    return(
-        <Card>
-            <ImageWrapper>
-                <BuildingImage src={imageSrc} alt={building?.properties?.name || "Building"}
-                    onError={(event) => {
-                    event.currentTarget.onerror = null;
-                    event.currentTarget.src = `/assets/default.jpg`;
-                    }}
-                />
-            </ImageWrapper>
-            <Label>{building.properties.name}</Label> 
-            <TextWrapper>
-                <Acronym>{metadata[id]?.acronym}</Acronym>
-                <FloorplanButton type="button" onClick={() => onShowFloorplan(building)}>
-                    <p style={{fontSize: "15px"}}>View Floorplan</p>
-                </FloorplanButton>
-            </TextWrapper>
-            
-        </Card>
-    );
+return (
+    <>
+      <Card>
+        <ImageWrapper>
+          <BuildingImage
+            src={imageSrc}
+            alt={building?.properties?.name || "Building"}
+            onError={(event) => {
+              event.currentTarget.onerror = null;
+              event.currentTarget.src = `/assets/default.jpg`;
+            }}
+          />
+        </ImageWrapper>
+        <Label>{building.properties.name}</Label>
+        <TextWrapper>
+          <Acronym>{metadata[id]?.acronym}</Acronym>
+          <FloorplanButton type="button" onClick={() => setShowFloorplan(true)}>
+            <p style={{ fontSize: "15px" }}>View Floorplan</p>
+          </FloorplanButton>
+        </TextWrapper>
+      </Card>
+
+      {showFloorplan && (
+        <FloorplanModal
+          building={building}
+          userLocation={userLocation}
+          onClose={() => setShowFloorplan(false)}
+        />
+      )}
+    </>
+  );
 }
