@@ -85,7 +85,7 @@ const InputRow = styled.div`
   transition: border-radius 0.15s ease;
 `;
 
-export default function RouteSearchBar({ onSelectBuilding, placeholder, disabledBuilding }) {
+export default function RouteSearchBar({ onSelectBuilding, placeholder, disabledBuilding, onFocus, onBlur }) {
   const metadata = useBuildingMetadata();
 
   const {buildings, loading: building_loading} = useBuildingGeoJSONData();
@@ -130,7 +130,7 @@ export default function RouteSearchBar({ onSelectBuilding, placeholder, disabled
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <InputRow hasSuggestions={suggestions.length > 0}>
-        <Input type="text" placeholder={placeholder || "Search on campus..."} value={query} onChange={handleChange}/>
+        <Input type="text" placeholder={placeholder || "Search on campus..."} value={query} onChange={handleChange} onFocus={onFocus} onBlur={onBlur}/>
         <Button type="submit">
           <MagnifyingGlassIcon style={{width: '20px', height: '20px'}} />
         </Button>
