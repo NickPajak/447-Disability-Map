@@ -13,6 +13,8 @@ import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 
 delete L.Icon.Default.prototype._getIconUrl;
 
+const basePath = process.env.PUBLIC_URL || "";
+
 L.Icon.Default.mergeOptions({
   iconRetinaUrl,
   iconUrl,
@@ -138,8 +140,8 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
       const info = metadata[buildingId] || {};
       const desc = info.description || "No description available.";
       const imgHtml = info.image
-  ? `${process.env.PUBLIC_URL}${info.image}`
-  : `${process.env.PUBLIC_URL}/assets/${buildingId}.jpg`;
+  ? `${basePath}${info.image}`
+  : `${basePath}/assets/${buildingId}.jpg`;
 
 
       const isAdded = addedIds.includes(buildingId);
@@ -159,7 +161,7 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
                   objectFit: "cover",
                   borderRadius: "4px"
                 }}
-                onError={e => e.currentTarget.src = `${process.env.PUBLIC_URL}/assets/default.jpg`}
+                onError={e => e.currentTarget.src = `${basePath}/assets/default.jpg`}
 
               />
               <p style={{ marginTop: "8px" }}>{desc}</p>
