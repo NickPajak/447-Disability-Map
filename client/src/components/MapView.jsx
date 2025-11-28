@@ -137,7 +137,10 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
       const buildingId = feature.properties.building_id;
       const info = metadata[buildingId] || {};
       const desc = info.description || "No description available.";
-      const imgHtml = info.image || `/assets/${buildingId}.jpg` || `/assets/default.jpg`;
+      const imgHtml = info.image
+  ? `${process.env.PUBLIC_URL}${info.image}`
+  : `${process.env.PUBLIC_URL}/assets/${buildingId}.jpg`;
+
 
       const isAdded = addedIds.includes(buildingId);
 
@@ -156,7 +159,8 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
                   objectFit: "cover",
                   borderRadius: "4px"
                 }}
-                onError={e => e.currentTarget.src = "/assets/default.jpg"}
+                onError={e => e.currentTarget.src = `${process.env.PUBLIC_URL}/assets/default.jpg`}
+
               />
               <p style={{ marginTop: "8px" }}>{desc}</p>
               <button
