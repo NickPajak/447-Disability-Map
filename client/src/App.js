@@ -76,7 +76,7 @@ function App() {
       <ThemeProvider theme={darkMode ? darkTheme: lightTheme}>
         <GlobalStyle />
         <AppContainer>
-          <TopRightImage src="/assets/LOGO.png" alt="Logo" />
+          <TopRightImage src="assets/LOGO.png" alt="Logo" />
 
           <ContentWrapper>
             <MainPage darkMode={darkMode}/>
