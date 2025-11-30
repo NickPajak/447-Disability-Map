@@ -89,13 +89,13 @@ export default function HelpButton({ darkMode, toggleDarkMode}) {
     setIsHelpOpen(!isHelpOpen);
   };  
 
-  const toggleLargeFont = () => {
-    document.body.classList.toggle('large-font');
-  }
+  // const toggleLargeFont = () => {
+  //   document.body.classList.toggle('large-font');
+  // }
 
-  const toggleHighContrast = () => {
-    document.body.classList.toggle('high-contrast');
-  }
+  // const toggleHighContrast = () => {
+  //   document.body.classList.toggle('high-contrast');
+  // }
 
   return (
     <>
@@ -129,9 +129,9 @@ export default function HelpButton({ darkMode, toggleDarkMode}) {
               <FrontSizeToggle/>
 
             </MenuItem>
-            <MenuItem  onClick={() => {document.body.classList.toggle('high-contrast');}}>
+            {/* <MenuItem  onClick={() => {document.body.classList.toggle('high-contrast');}}>
             Toggle High Contrast
-            </MenuItem>
+            </MenuItem> */}
             
          
         </HelpMenu>
