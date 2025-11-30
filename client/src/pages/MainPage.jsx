@@ -1,8 +1,8 @@
 import MapView from "../components/MapView";
 import RoutePlanner from "../components/RoutePlanner";
-import styled from "styled-components";
-import React, { useState } from 'react';
-import { createGlobalStyle } from "styled-components";
+import FloorplanViewer from "../components/FloorplanViewer";
+import styled, { createGlobalStyle } from "styled-components";
+import React, { useState } from "react";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -20,167 +20,176 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const PageContainer = styled.div`
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background-color: ${props => props.theme.routePlannerBg};
+  display: flex;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: ${(props) => props.theme.routePlannerBg};
 `;
 
 const SideBar = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 440px;
-    height: 100%;
-    background-color: ${props => props.theme.routePlannerBg};
-    color: white;
-    border-right: 2px solid transparent;
-    padding: 1rem 1rem 1rem 1rem;
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 440px;
+  height: 100%;
+  background-color: ${(props) => props.theme.routePlannerBg};
+  color: white;
+  padding: 1rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
-    &::-webkit-scrollbar {
-        display: none;
-    }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
-const MapContainer = styled.div`
-    flex: 1;
-    background-color: #d9d9d9;
-    width: calc(100vw - 400px);
+const MapWrapper = styled.div`
+  flex: 1;
+  position: relative;
+  background-color: #d9d9d9;
 `;
 
-export default function MainPage({darkMode}) {
-    const [selectedFeature, setSelectedFeature] = useState(null);
-    const [featureToAdd, setFeatureToAdd] = useState(null);
-    const [routeRequest, setRouteRequest] = useState(null);
+const FloorplanOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: white;
+  z-index: 500;
+  overflow: hidden;
 
-    // Welcome Message
-    const [showAnnouncement, setShowAnnouncement] = useState(true);
+  /* Smooth fade-in */
+  animation: fadeIn 0.2s ease;
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+`;
 
-    // Interior View
-    const [viewMode, setViewMode] = useState("map");
-    const [activeBuilding, setActiveBuilding] = useState(null);
+export default function MainPage({ darkMode }) {
+  const [selectedFeature, setSelectedFeature] = useState(null);
+  const [featureToAdd, setFeatureToAdd] = useState(null);
+  const [routeRequest, setRouteRequest] = useState(null);
 
+  // Temporary full-screen announcement
+  const [showAnnouncement, setShowAnnouncement] = useState(true);
 
-    const handleAddFeature = (feature) => {
-        setFeatureToAdd(feature);
-        setSelectedFeature(feature);
-    };
+  // Floorplan overlay controller
+  const [activeBuilding, setActiveBuilding] = useState(null);
 
-    const handleFeatureConsumed = () => {
-        setFeatureToAdd(null);
-    };
+  const handleAddFeature = (feature) => {
+    setFeatureToAdd(feature);
+    setSelectedFeature(feature);
+  };
 
-    const handleRouteRequest = (startId, endId) => {
-        setRouteRequest({startId, endId});
-    };
+  const handleFeatureConsumed = () => setFeatureToAdd(null);
 
+  const handleRouteRequest = (startId, endId) => {
+    setRouteRequest({ startId, endId });
+  };
 
-    return (
-        <>
-            <GlobalStyle />
-            <PageContainer>
-                <SideBar>
-                    <RoutePlanner
-                        onSelectFeature={setSelectedFeature}
-                        addFeature={featureToAdd}
-                        onFeatureConsumed={handleFeatureConsumed}
-                        onRouteRequest={handleRouteRequest}
+  return (
+    <>
+      <GlobalStyle />
+      <PageContainer>
 
-                        onShowFloorplan={(building) => {
-                            setActiveBuilding(building);
-                            setViewMode("floorplan");
-                        }}
-                    />
-                </SideBar>
-                <MapContainer>
-                    {viewMode === "map" && (
-                    <MapView
-                        selectedFeature={selectedFeature}
-                        onAddFeature={handleAddFeature}
-                        darkMode={darkMode}
-                        routeRequest={routeRequest}
+        {/* LEFT SIDEBAR */}
+        <SideBar>
+          <RoutePlanner
+            onSelectFeature={setSelectedFeature}
+            addFeature={featureToAdd}
+            onFeatureConsumed={handleFeatureConsumed}
+            onRouteRequest={handleRouteRequest}
+            onShowFloorplan={(building) => setActiveBuilding(building)}
+          />
+        </SideBar>
 
-                        onShowFloorplan={(building) => {
-                            setActiveBuilding(building);
-                            setViewMode("floorplan");
-                        }}
-                    />
-                    )}
+        {/* RIGHT MAP + OVERLAY */}
+        <MapWrapper>
 
-                    {/* {viewMode === "floorplan" && activeBuilding && (
-                        <FloorplanViewer 
-                            building={activeBuilding} 
-                            onBack={() => setViewMode("map")}
-                            />
-                        
-                    )} */}
-                </MapContainer>
-                {showAnnouncement && (
-                    <div style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        width: "100vw",
-                        height: "100vh",
-                        background: "rgba(0,0,0,0.5)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        zIndex: 9999
-                    }}>
-                        <div style={{
-                            width: "560px",
-                            maxWidth: "90vw",
-                            padding: "24px",
-                            borderRadius: "14px",
-                            background: "#ffffff",
-                            color: "#000",
-                            boxShadow: "0 6px 14px rgba(0,0,0,0.25)"
-                        }}>
-                            <h2 style={{ marginTop: 0 }}>Announcements</h2>
+          {/* MAP ALWAYS MOUNTS, NEVER RELOADS */}
+          <MapView
+            selectedFeature={selectedFeature}
+            onAddFeature={handleAddFeature}
+            darkMode={darkMode}
+            routeRequest={routeRequest}
+            onShowFloorplan={(building) => setActiveBuilding(building)}
+          />
 
-                            <div>
-                                <h3>🚧 Alerts</h3>
-                                <p>Construction around <strong>Sherman</strong> and <strong>Sondheim</strong>, so some routes may shift.</p>
+          {/* FLOORPLAN OVERLAY */}
+          {activeBuilding && (
+            <FloorplanOverlay>
+              <FloorplanViewer
+                building={activeBuilding}
+                onBack={() => setActiveBuilding(null)}
+              />
+            </FloorplanOverlay>
+          )}
+        </MapWrapper>
 
-                                <h3>♿ Accessibility Notes</h3>
-                                <p>Outdoor accessible routes are open during school hours.</p>
-                                <p>Indoor 24/7 routes need clearance once buildings lock.</p>
+        {/* ANNOUNCEMENT MODAL */}
+        {showAnnouncement && (
+          <div
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.5)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 9999,
+            }}
+          >
+            <div
+              style={{
+                width: "560px",
+                maxWidth: "90vw",
+                padding: "24px",
+                borderRadius: "14px",
+                background: "#ffffff",
+                color: "#000",
+                boxShadow: "0 6px 14px rgba(0,0,0,0.25)",
+              }}
+            >
+              <h2 style={{ marginTop: 0 }}>Announcements</h2>
 
-                                <h3>⚠️ Quick Reminder</h3>
-                                <p>This app doesn’t replace official emergency or evacuation instructions.</p>
-                            </div>
+              <div>
+                <h3>🚧 Alerts</h3>
+                <p>
+                  Construction around <strong>Sherman</strong> and{" "}
+                  <strong>Sondheim</strong>, so some routes may shift.
+                </p>
 
-                            <button
-                                onClick={() => setShowAnnouncement(false)}
-                                style={{
-                                    marginTop: "20px",
-                                    padding: "12px",
-                                    width: "100%",
-                                    borderRadius: "10px",
-                                    border: "none",
-                                    background: "#333",
-                                    color: "white",
-                                    fontSize: "1rem",
-                                    cursor: "pointer"
-                                }}
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                )}
+                <h3>♿ Accessibility Notes</h3>
+                <p>Outdoor accessible routes are open during school hours.</p>
+                <p>Indoor 24/7 routes need clearance once buildings lock.</p>
 
-            </PageContainer>
-        </>
-    );
+                <h3>⚠️ Quick Reminder</h3>
+                <p>This app doesn’t replace official emergency instructions.</p>
+              </div>
+
+              <button
+                onClick={() => setShowAnnouncement(false)}
+                style={{
+                  marginTop: "20px",
+                  padding: "12px",
+                  width: "100%",
+                  borderRadius: "10px",
+                  border: "none",
+                  background: "#333",
+                  color: "white",
+                  fontSize: "1rem",
+                  cursor: "pointer",
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </PageContainer>
+    </>
+  );
 }
