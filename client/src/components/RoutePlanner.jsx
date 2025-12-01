@@ -201,6 +201,25 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
                 Reset
                 </button>
             )}
+
+            {(startDestination || endDestination) && (
+                <button
+                onClick={() => {window.print();}}
+                style={{
+                    marginTop: "12px",
+                    padding: "8px 12px",
+                    backgroundColor: "#444",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                }}
+                >
+                Print
+                </button>
+            )}
+
+
             {/*TODO: Integrate button with route planning*/}
             {startDestination && endDestination && (
             <StartRouteButton 
