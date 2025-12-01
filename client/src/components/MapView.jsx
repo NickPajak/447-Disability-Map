@@ -1,12 +1,11 @@
-import React, { use, useEffect, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap } from 'react-leaflet';
+import React, { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import styled from "styled-components";
 import L from 'leaflet';
-import {useBuildingGeoJSONData, useBusStopGeoJSONData,useHighwayGeoJSONData, useEntranceGeoJSONData } from '../utils/loadGeoJSONData';
+import { useBuildingGeoJSONData, useBusStopGeoJSONData, useHighwayGeoJSONData, useEntranceGeoJSONData } from '../utils/loadGeoJSONData';
 import { useBuildingMetadata } from '../utils/loadMetadata';
 import { findRoute } from '../utils/geojsonRouteSearch';
-import { Polyline } from 'react-leaflet';
 
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
@@ -14,58 +13,54 @@ import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 
 delete L.Icon.Default.prototype._getIconUrl;
 
+const basePath = process.env.PUBLIC_URL || "";
+
 L.Icon.Default.mergeOptions({
   iconRetinaUrl,
   iconUrl,
   shadowUrl,
 });
-// default center for the map (UMBC coordinates)
+
+// Default map center (UMBC)
 const defaultCenter = [39.2554, -76.7116];
 
-// Styled component for the map container
+// Styled map container
 const MapContainerStyled = styled(MapContainer)`
     height: 100vh;
     width: 100%;
 `;
 
-
-// Light Base Map Tile Layer
 const lightTileLayer = {
   url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 };
 
-// Dark Base Map Tile Layer
 const darkTileLayer = {
   url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
   attribution: '&copy; <a href="https://www.carto.com/">CARTO</a> contributors &copy; OpenStreetMap'
 };
 
-//return center of the building
+// Compute building center
 function getFeatureCenter(feature){
     if (!feature.geometry) return null;
 
-      let lat, lng;
-
-      if (feature.geometry.type === "Point") {
+    let lat, lng;
+    if (feature.geometry.type === "Point") {
         [lng, lat] = feature.geometry.coordinates;
-      } else if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-        // Zoom to the centroid of the polygon
+    } else if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
         const coords = feature.geometry.type === "Polygon"
-          ? feature.geometry.coordinates[0] // first ring
-          : feature.geometry.coordinates[0][0]; // first ring of first polygon
-
+            ? feature.geometry.coordinates[0]
+            : feature.geometry.coordinates[0][0];
         const lats = coords.map(c => c[1]);
         const lngs = coords.map(c => c[0]);
         lat = (Math.min(...lats) + Math.max(...lats)) / 2;
         lng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
-      } else {
-        return null;
-      }
+    } else return null;
 
-      return [lat, lng];
+    return [lat, lng];
 }
-  //Zoom Feature
+
+// Zoom to feature
 function ZoomFeature({feature}) {
   const map = useMap();
   useEffect(() => {
@@ -73,11 +68,9 @@ function ZoomFeature({feature}) {
     const destination = getFeatureCenter(feature);
     if (destination) map.flyTo(destination, 18);
   }, [feature, map]);
-
-  return null
+  return null;
 }
 
-//hide building types. not show mis items in building geojson
 const hiddenTypes = ["bridge", "deck", "Loading Dock"];
 
 
@@ -87,40 +80,34 @@ export default function MapView({ selectedFeature, onAddFeature,routeRequest ,da
   const { busstops, loading: busstopsLoading } = useBusStopGeoJSONData();
   const { highways, loading: highwaysLoading } = useHighwayGeoJSONData();
   const { entrances, loading: entrancesLoading } = useEntranceGeoJSONData();
-  const [route, setRoute] = useState(null);
   const metadata = useBuildingMetadata();
 
-    // Handle route search
+  const [route, setRoute] = useState(null);
+  const [addedIds, setAddedIds] = useState([]); // Track added features for button feedback
+
   useEffect(() => {
-  if (!routeRequest) return;
-  if (!highways.length || !entrances.length || !busstops.length) return;
+    if (!routeRequest || !highways.length || !entrances.length || !busstops.length) return;
 
-  console.log("MapView received routeRequest:", routeRequest);
+    const startId = routeRequest.startId;
+    const endId = routeRequest.endId;
 
-  const startId = routeRequest.startId;
-  const endId = routeRequest.endId;
+    const highwayFC = { type: "FeatureCollection", features: highways };
+    const entranceFC = { type: "FeatureCollection", features: entrances };
+    const busstopFC = { type: "FeatureCollection", features: busstops };
 
-  // IMPORTANT: wrap GeoJSON arrays into FeatureCollection
-  const highwayFC = { type: "FeatureCollection", features: highways };
-  const entranceFC = { type: "FeatureCollection", features: entrances };
-  const busstopFC = { type: "FeatureCollection", features: busstops };
+    const result = findRoute({
+      startBuildingId: startId,
+      endBuildingId: endId,
+      entrances: entranceFC,
+      highways: highwayFC,
+      busstops: busstopFC.features || busstops,
+      metadata: metadata
+    });
 
-  const result = findRoute({
-    startBuildingId: startId,
-    endBuildingId: endId,
-    entrances: entranceFC,
-    highways: highwayFC,
-    busstops: busstops.features || busstops,
-    metadata: metadata
-  });
+    setRoute(result);
+  }, [routeRequest, highways, entrances, busstops, metadata]);
 
-  console.log("Route result = ", result);
-
-  setRoute(result);
-}, [routeRequest, highways, entrances, busstops, metadata]);
-
-
-  if (buildingsLoading || busstopsLoading || highwaysLoading || !metadata  || entrancesLoading) {
+  if (buildingsLoading || busstopsLoading || highwaysLoading || entrancesLoading || !metadata) {
     return <div>Loading map data...</div>;
   }
 
@@ -131,22 +118,19 @@ export default function MapView({ selectedFeature, onAddFeature,routeRequest ,da
     fillOpacity: 0.3
   };
 
-  const highwayStyle = {
-    color: '#fdac153d',
-    weight: 3,
-    opacity: 0.9
+  const highwayStyle = { color: '#fdac153d', weight: 3, opacity: 0.9 };
+  const busstopStyle = { radius: 6, fillColor: '#fdb515', color: '#000', weight: 1, opacity: 1, fillOpacity: 0.9 };
+
+  // Handle adding feature with temporary button feedback
+  const handleAddFeature = (feature) => {
+    onAddFeature(feature);
+    setAddedIds(prev => [...prev, feature.properties.building_id || feature.properties.id]);
+    setTimeout(() => {
+      setAddedIds(prev => prev.filter(id => id !== (feature.properties.building_id || feature.properties.id)));
+    }, 2000); // button stays green for 2s
   };
 
-  const busstopStyle = {
-    radius: 6,
-    fillColor: '#fdb515', 
-    color: '#000000',   
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.9
-  };
-
-  //Marker + Popup 
+  // Markers
   const buildingMarkers = buildings
         //hide mis buildings
       .filter((feature)=> {
@@ -226,63 +210,68 @@ export default function MapView({ selectedFeature, onAddFeature,routeRequest ,da
   const busStopMarkers = busstops
     .map ((feature, index) => {
     const center = getFeatureCenter(feature);
-    if(!center) return null;
+    if (!center) return null;
 
     const name = feature.properties.name || "Bus Stop";
-    const [lng, lat] = feature.geometry.coordinates;
+    const id = feature.properties.id;
+    const isAdded = addedIds.includes(id);
+
     return (
-      <Marker position={center}>
+      <Marker key={index} position={center}>
         <Popup maxWidth={220}>
           <h3>Bus Stop: {name}</h3>
           <button
-            onClick={()=> onAddFeature(feature)}
+            onClick={() => handleAddFeature(feature)}
             style={{
               marginTop: "8px",
               padding: "6px 12px",
-              backgroundColor: "#6c757d",
+              backgroundColor: isAdded ? "#28a745" : "#6c757d",
               color: "white",
               border: "none",
               borderRadius: "4px",
               cursor: "pointer",
+              transition: "background-color 0.3s ease"
             }}
           >
-            + ADD
+            {isAdded ? "✓ Added" : "+ ADD"}
           </button>
         </Popup>
       </Marker>
     );
   });
-    
-
 
   return (
     <MapContainerStyled center={center} zoom={zoom} scrollWheelZoom={true}>
-     <TileLayer
-      url={darkMode ? darkTileLayer.url : lightTileLayer.url}
-      attribution={darkMode ? darkTileLayer.attribution : lightTileLayer.attribution}
-    />
+      <TileLayer
+        url={darkMode ? darkTileLayer.url : lightTileLayer.url}
+        attribution={darkMode ? darkTileLayer.attribution : lightTileLayer.attribution}
+      />
 
-    <GeoJSON data={buildings.filter(
-      (feature) => !hiddenTypes.includes(feature.properties.name?.toLowerCase())
-    )}
-    style={() => ({...buildingStyle})} />
+      <GeoJSON
+        data={buildings.filter(f => !hiddenTypes.includes(f.properties.name?.toLowerCase()))}
+        style={() => ({ ...buildingStyle })}
+      />
 
-    <GeoJSON data={busstops} style={() => ({...busstopStyle})} pointToLayer={(feature, latlng) => L.circleMarker(latlng, busstopStyle)}/>
-     
-    {busStopMarkers}
-    {buildingMarkers}
+      <GeoJSON
+        data={busstops}
+        style={() => ({ ...busstopStyle })}
+        pointToLayer={(feature, latlng) => L.circleMarker(latlng, busstopStyle)}
+      />
 
-    {selectedFeature && <ZoomFeature feature={selectedFeature} />}
-    
-    <GeoJSON data={highways} style={() => ({...highwayStyle})} />
-    {route?.route_coords && (
-    <Polyline
-      positions={route.route_coords.map(([lng, lat]) => [lat, lng])}
-     color="red"
-      weight={5}
-    />
-    )}
-    
+      {buildingMarkers}
+      {busStopMarkers}
+
+      {selectedFeature && <ZoomFeature feature={selectedFeature} />}
+
+      <GeoJSON data={highways} style={() => ({ ...highwayStyle })} />
+
+      {route?.route_coords && (
+        <Polyline
+          positions={route.route_coords.map(([lng, lat]) => [lat, lng])}
+          color="red"
+          weight={5}
+        />
+      )}
     </MapContainerStyled>
   );
 

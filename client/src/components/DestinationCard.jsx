@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { useBuildingMetadata } from "../utils/loadMetadata";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 
+const basePath = process.env.PUBLIC_URL || "";
+
+
 const Card = styled.div`
     position: relative;
     width: 400px;
@@ -89,7 +92,8 @@ export default function DestinationCard({ label, building, onClear, onShowFloorp
 
     const id = building.properties.building_id;
     const info = metadata[id] || {};
-    const imageSrc = `/assets/${id}.jpg`;
+    const imageSrc = `${basePath}/assets/${id}.jpg`;
+
 
     return(
         <Card>
@@ -97,7 +101,8 @@ export default function DestinationCard({ label, building, onClear, onShowFloorp
                 <BuildingImage src={imageSrc} alt={building?.properties?.name || "Building"}
                     onError={(event) => {
                     event.currentTarget.onerror = null;
-                    event.currentTarget.src = `/assets/default.jpg`;
+                    event.currentTarget.src = `${basePath}/assets/default.jpg`;
+
                     }}
                 />
             </ImageWrapper>

@@ -73,20 +73,23 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
     //const [selectedFeature, setSelectedFeature] = useState(null);
 
     const handleSelectBuilding = useCallback((building) => {
-        if(!building) {
-            return;
-        }
-        if(step === "start") {
+        if (!building) return;
+
+        if (step === "start") {
             setStartDestination(building);
             setStep("end");
-        } else {
+            onSelectFeature?.(building);
+        } else if (step === "end") {
+            // Don't allow selecting the same building as start
+            if (startDestination && building.properties.building_id === startDestination.properties.building_id) {
+            return; // ignore duplicate
+            }
             setEndDestination(building);
             setStep("done");
+            onSelectFeature?.(building);
         }
-        if (onSelectFeature) {
-            onSelectFeature(building);
-        }
-    }, [onSelectFeature, step]);
+    }, [onSelectFeature, step, startDestination]);
+
 
     // Resets both destinations and restarts planner from the "start" step.
     const resetRoute = () => {
@@ -114,13 +117,17 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
     return(
         <div style={{ position: "relative", paddingBottom:"80px"}}>
             <Title>Campus Compass</Title>
-            <RouteSearchBar 
+            <RouteSearchBar
                 key={step}
                 placeholder={
                     step === "start" ? "Search start destination..." : "Search end destination"
                 }
                 onSelectBuilding={handleSelectBuilding}
+                disabledBuilding={step === "end" ? startDestination : null}
+                onFocus={onExpand}
+                onBlur={() => {}}
             />
+
 
             {/* if there's no place added to route, add default welcome text*/}
             {!startDestination && !endDestination && (
@@ -198,30 +205,30 @@ export default function RoutePlanner( {onSelectFeature, addFeature, onFeatureCon
             )}
             {/*TODO: Integrate button with route planning*/}
             {startDestination && endDestination && (
-<StartRouteButton 
-style={{
-    position: "absolute",
-    bottom: "20px",
-    left: "50%",
-    transform: "translateX(-50%)",
-}}
+            <StartRouteButton 
+            style={{
+                position: "absolute",
+                bottom: "20px",
+                left: "50%",
+                transform: "translateX(-50%)",
+            }}
 
-onClick={ () => {
-    if (startDestination && endDestination) {
-        onRouteRequest(
-             startDestination.properties.building_id || startDestination.properties.id,
+            onClick={ () => {
+                if (startDestination && endDestination) {
+                    onRouteRequest(
+                        startDestination.properties.building_id || startDestination.properties.id,
 
-             endDestination.properties.building_id || endDestination.properties.id,
-        );
-        console.log("START ROUTE:",
-            startDestination?.properties?.building_id,
-            startDestination?.properties?.id,
-            endDestination?.properties?.building_id,
-            endDestination?.properties?.id
-        );
-    }
-}}
->
+                        endDestination.properties.building_id || endDestination.properties.id,
+                    );
+                    console.log("START ROUTE:",
+                        startDestination?.properties?.building_id,
+                        startDestination?.properties?.id,
+                        endDestination?.properties?.building_id,
+                        endDestination?.properties?.id
+                    );
+                }
+            }}
+            >
 
     <h3>Start Route</h3>
 </StartRouteButton>

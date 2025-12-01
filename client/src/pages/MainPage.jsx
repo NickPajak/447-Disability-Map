@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from 'react';
+import styled, { createGlobalStyle } from 'styled-components';
 import MapView from "../components/MapView";
 import RoutePlanner from "../components/RoutePlanner";
 import FloorplanViewer from "../components/FloorplanViewer";
@@ -13,9 +15,9 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
+    background-color: #acaaaa;
     overflow: hidden;
-    background-color: #acaaaaff;
   }
 `;
 
