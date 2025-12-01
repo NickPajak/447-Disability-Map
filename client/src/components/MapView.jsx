@@ -214,7 +214,7 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
   });
 
   return (
-    <MapContainerStyled center={center} zoom={zoom} scrollWheelZoom={true}>
+    <MapContainerStyled center={center} zoom={zoom} scrollWheelZoom={true} minZoom={16} >
       <TileLayer
         url={darkMode ? darkTileLayer.url : lightTileLayer.url}
         attribution={darkMode ? darkTileLayer.attribution : lightTileLayer.attribution}
