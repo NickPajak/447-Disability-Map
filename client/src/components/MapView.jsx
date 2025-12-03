@@ -13,6 +13,8 @@ import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 
 delete L.Icon.Default.prototype._getIconUrl;
 
+const basePath = process.env.PUBLIC_URL || "";
+
 L.Icon.Default.mergeOptions({
   iconRetinaUrl,
   iconUrl,
@@ -71,7 +73,9 @@ function ZoomFeature({feature}) {
 
 const hiddenTypes = ["bridge", "deck", "Loading Dock"];
 
-export default function MapView({ selectedFeature, onAddFeature, routeRequest, darkMode, geoJsonData, center = defaultCenter, zoom = 17 }) {
+
+export default function MapView({ selectedFeature, onAddFeature,routeRequest ,darkMode, geoJsonData, center = defaultCenter, zoom = 17, onShowFloorplan }) {
+  //Load geoJsonData 
   const { buildings, loading: buildingsLoading } = useBuildingGeoJSONData();
   const { busstops, loading: busstopsLoading } = useBusStopGeoJSONData();
   const { highways, loading: highwaysLoading } = useHighwayGeoJSONData();
@@ -129,59 +133,83 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
 
   // Markers
   const buildingMarkers = buildings
-    .filter(f => !hiddenTypes.includes(f.properties.name?.toLowerCase()))
-    .map((feature, index) => {
-      const center = getFeatureCenter(feature);
-      if (!center) return null;
+        //hide mis buildings
+      .filter((feature)=> {
+        const name = feature.properties.name?.toLowerCase() || "";
+        return !(hiddenTypes.includes(name));
+      })
+      //show marker
+      .map((feature, index) => {
+        const center = getFeatureCenter(feature);
+        if (!center) return null;
 
-      const name = feature.properties.name || "Building";
-      const buildingId = feature.properties.building_id;
-      const info = metadata[buildingId] || {};
-      const desc = info.description || "No description available.";
-      const imgHtml = info.image || `/assets/${buildingId}.jpg` || `/assets/default.jpg`;
+        const name = feature.properties.name || "building";
+        const buildingId = feature.properties.building_id;
+        const info = metadata[buildingId] || {};
+        const desc = info.description || "No description available.";
+        const defaultImage = "/assets/default.jpg";
+        const imgHtml = info.image || `/assets/${buildingId}.jpg` || `/assets/default.jpg`;
 
-      const isAdded = addedIds.includes(buildingId);
+        return(
+          <Marker key={index} position={center}>
+            <Popup maxWidth= {260}>
+              <div style={{width: "240px", textAlign: "left"}}>
+                <h3>{name}</h3>
+                <img
+                  src={imgHtml}
+                  alt={name}
+                  style={{
+                    width : "100%",
+                    height: "auto",
+                    maxHeight: "120px", 
+                    objectFit: "cover", borderRadius: "4px" }}
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src = defaultImage;
+                  }}
+                />
+                <p style={{ marginTop: "8px" }}>{desc}</p>
+                <button
+                    onClick={() => onAddFeature(feature)}
+                      style={{
+                        marginTop: "8px",
+                        padding: "6px 12px",
+                        backgroundColor:" #6c757d",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                      }}
+                      
+                >
+                  + ADD
+                </button>
 
-      return (
-        <Marker key={index} position={center}>
-          <Popup maxWidth={260}>
-            <div style={{ width: "240px", textAlign: "left" }}>
-              <h3>{name}</h3>
-              <img
-                src={imgHtml}
-                alt={name}
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  maxHeight: "120px",
-                  objectFit: "cover",
-                  borderRadius: "4px"
-                }}
-                onError={e => e.currentTarget.src = "/assets/default.jpg"}
-              />
-              <p style={{ marginTop: "8px" }}>{desc}</p>
-              <button
-                onClick={() => handleAddFeature(feature)}
-                style={{
-                  marginTop: "8px",
-                  padding: "6px 12px",
-                  backgroundColor: isAdded ? "#28a745" : "#6c757d",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  transition: "background-color 0.3s ease"
-                }}
-              >
-                {isAdded ? "✓ Added" : "+ ADD"}
-              </button>
-            </div>
-          </Popup>
-        </Marker>
-      );
-    });
+                <button
+                    onClick={() => onShowFloorplan(feature)}
+                    style={{
+                      marginTop: "8px",
+                      marginLeft: "8px",
+                      padding: "6px 12px",
+                      backgroundColor:" #6c757d",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer"
+                    }}
+                >
+                  View Floorplan
+                </button>
 
-  const busStopMarkers = busstops.map((feature, index) => {
+              </div>
+            </Popup>
+          </Marker>
+        )
+      })
+  
+    // Bus Marker
+  const busStopMarkers = busstops
+    .map ((feature, index) => {
     const center = getFeatureCenter(feature);
     if (!center) return null;
 
@@ -275,4 +303,6 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
       })}
     </MapContainerStyled>
   );
+
+
 }

@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { useBuildingMetadata } from "../utils/loadMetadata";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 
+const basePath = process.env.PUBLIC_URL || "";
+
+
 const Card = styled.div`
     position: relative;
     width: 400px;
@@ -83,13 +86,14 @@ const FloorplanButton = styled.button`
     }
 `;
 
-export default function DestinationCard({ label, building, onClear}) {
+export default function DestinationCard({ label, building, onClear, onShowFloorplan}) {
     const metadata = useBuildingMetadata();
     if (!building) return null; // or return a placeholder/loading message
 
     const id = building.properties.building_id;
     const info = metadata[id] || {};
-    const imageSrc = `/assets/${id}.jpg`;
+    const imageSrc = `${basePath}/assets/${id}.jpg`;
+
 
     return(
         <Card>
@@ -97,14 +101,15 @@ export default function DestinationCard({ label, building, onClear}) {
                 <BuildingImage src={imageSrc} alt={building?.properties?.name || "Building"}
                     onError={(event) => {
                     event.currentTarget.onerror = null;
-                    event.currentTarget.src = `/assets/default.jpg`;
+                    event.currentTarget.src = `${basePath}/assets/default.jpg`;
+
                     }}
                 />
             </ImageWrapper>
             <Label>{building.properties.name}</Label> 
             <TextWrapper>
                 <Acronym>{metadata[id]?.acronym}</Acronym>
-                <FloorplanButton type="submit">
+                <FloorplanButton type="button" onClick={() => onShowFloorplan(building)}>
                     <p style={{fontSize: "15px"}}>View Floorplan</p>
                 </FloorplanButton>
             </TextWrapper>
