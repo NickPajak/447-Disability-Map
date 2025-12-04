@@ -158,7 +158,10 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
                 }}
                 onError={e => e.currentTarget.src = "/assets/default.jpg"}
               />
-              <p style={{ marginTop: "8px" }}>{desc}</p>
+              <p 
+                style={{ marginTop: "8px" }}
+                dangerouslySetInnerHTML={{ __html: desc}}
+              />
               <button
                 onClick={() => handleAddFeature(feature)}
                 style={{
