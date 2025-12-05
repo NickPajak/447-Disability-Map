@@ -99,11 +99,20 @@ export function findRoute({startBuildingId, endBuildingId,  entrances,  highways
 
   function isPointPassed(point) {
     const [lng, lat] = point;
-    return bestPath.path.some(
-      ([x, y]) => Math.abs(x - lng) < tolerance && Math.abs(y - lat) < tolerance
-    );
+    return bestPath.path.some(([x, y]) => Math.abs(x - lng) < tolerance && Math.abs(y - lat) < tolerance);
   }
-  
+
+  // Ensure we iterate safely whether entrances is a FeatureCollection or an array
+  const entranceFeatures = (entrances && entrances.features) ? entrances.features : (entrances || []);
+  entranceFeatures.forEach((entrance) => {
+    if (!entrance || !entrance.geometry) return;
+    const coords = entrance.geometry.coordinates;
+    if (coords && isPointPassed(coords)) {
+      passedPoints.push(entrance);
+    }
+  });
+
+  console.debug('findRoute: computed passedPoints', { count: passedPoints.length, passedPoints });
 
 
   return {
@@ -112,7 +121,7 @@ export function findRoute({startBuildingId, endBuildingId,  entrances,  highways
     route_coords: bestPath.path,
     start_point: usedStart,
     end_point: usedEnd,
-    passed_Points: passedPoints,
+    passedPoints: passedPoints,
     total_distance: bestPath.weight
   };
 }

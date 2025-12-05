@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap, Polyline, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import styled from "styled-components";
 import L from 'leaflet';
@@ -99,7 +99,7 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
       busstops: busstopFC.features || busstops,
       metadata: metadata
     });
-
+    console.debug('MapView routing result', result);
     setRoute(result);
   }, [routeRequest, highways, entrances, busstops, metadata]);
 
@@ -116,6 +116,7 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
 
   const highwayStyle = { color: '#fdac153d', weight: 3, opacity: 0.9 };
   const busstopStyle = { radius: 6, fillColor: '#fdb515', color: '#000', weight: 1, opacity: 1, fillOpacity: 0.9 };
+  const passedPointStyle = { radius: 4, fillColor: '#000000', color: '#000000', weight: 1, opacity: 1, fillOpacity: 1 };
 
   // Handle adding feature with temporary button feedback
   const handleAddFeature = (feature) => {
@@ -216,7 +217,7 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
   });
 
   return (
-    <MapContainerStyled center={center} zoom={zoom} scrollWheelZoom={true}>
+    <MapContainerStyled center={center} zoom={zoom} scrollWheelZoom={true} minZoom={16} >
       <TileLayer
         url={darkMode ? darkTileLayer.url : lightTileLayer.url}
         attribution={darkMode ? darkTileLayer.attribution : lightTileLayer.attribution}
@@ -247,6 +248,34 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
           weight={5}
         />
       )}
+
+      {route?.passedPoints && route.passedPoints.map((feature, index) => {
+        const pos = getFeatureCenter(feature)
+          || (feature && feature.geometry && feature.geometry.coordinates
+              ? [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]
+              : (Array.isArray(feature) ? [feature[1], feature[0]] : null));
+        if (!pos) return null;
+
+        return (
+          <CircleMarker
+            key={`passed-${index}`}
+            center={pos}
+            pathOptions={{
+              color: passedPointStyle.color,
+              fillColor: passedPointStyle.fillColor,
+              fillOpacity: passedPointStyle.fillOpacity,
+              opacity: passedPointStyle.opacity,
+              weight: passedPointStyle.weight,
+            }}
+            radius={passedPointStyle.radius}
+          >
+            <Popup>
+              <p>{(feature?.properties && feature.properties.name)  || "entrance"}</p>
+              <p>Level: {(feature?.properties && feature.properties.level) || 'elevator'}</p>
+            </Popup>
+          </CircleMarker>
+        );
+      })}
     </MapContainerStyled>
   );
 }

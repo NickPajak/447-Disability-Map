@@ -53,13 +53,28 @@ const BottomBar = styled.div`
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 12px 16px;
-  background: ${props => props.theme.bottomBarColor || "white"};
+  padding: 5px 5px;
+  background-color: ${({ theme }) => theme.routePlannerBg};
   display: flex;
-  gap: 12px;
+  gap: 5px;
   justify-content: space-between;
   align-items: center;
   z-index: 2;
+`;
+
+const BottomBarButton = styled.button`
+    background-color: ${props => props.theme.buttonBg};
+    color: ${props => props.theme.buttonText};
+    border-radius: 1rem;
+    border: none;
+    cursor: pointer;
+    padding: 10px 16px;
+    flex: 1;
+
+    &:hover {
+        background-color: #3b3b3b;
+        color: #fdb515;
+    }
 `;
 
 const StartRouteButton = styled.button`
@@ -68,13 +83,13 @@ const StartRouteButton = styled.button`
     border-radius: 1rem;
     border: none;
     cursor: pointer;
-    padding: 3px 20px;
+    padding: 10px 16px;
+    flex: 1;    
 
     &:hover {
         background-color: #3b3b3b;
         color: #fdb515;
     }
-
 `;
 
 const StartIcon = styled(HomeIcon)`
@@ -217,28 +232,23 @@ export default function RoutePlanner({ onSelectFeature, addFeature, onFeatureCon
             {/* fixed bottom bar */}
             {(startDestination || endDestination) && (
                 <BottomBar>
-                    <button
+                    <BottomBarButton
                         onClick={resetRoute}
-                        style={{
-                            padding: "10px 16px",
-                            backgroundColor: "#444",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "1rem",
-                            cursor: "pointer",
-                            flex: 1,
-                        }}
                     >
                         <h3 style={{ margin: 0 }}>Reset</h3>
-                    </button>
+                    </BottomBarButton>
+
+                    {(startDestination || endDestination) && (
+                        <BottomBarButton
+                            onClick={() => { window.print(); }}
+                        >
+                            <h3 style={{ margin: 0 }}>Print</h3>
+                        </BottomBarButton>
+                    )}
 
                     {/*TODO: Integrate button with route planning*/}
                     {startDestination && endDestination && (
                         <StartRouteButton
-                            style={{
-                                flex: 1,
-                                padding: "10px 16px",
-                            }}
                             onClick={() => {
                                 if (startDestination && endDestination) {
                                     onRouteRequest(
