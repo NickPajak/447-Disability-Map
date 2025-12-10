@@ -33,33 +33,37 @@ export function findRoute({startBuildingId, endBuildingId,  entrances,  highways
   const startCoords = [];
   const endCoords = [];
 
-  //start Building 
-  if (startBuildingId && metadata && metadata[startBuildingId]) {
-    const startEntrancesIds = getBuildingEntrances(startBuildingId, entrances, metadata);
-    startCoords.push(...startEntrancesIds);
-  }
 
-  //start Bus_stop
-  else if (typeof endBuildingId === "string" && endBuildingId.startsWith("bus_")) {
+  if (typeof startBuildingId === "string" && startBuildingId.startsWith("bus_")) {
     const bs = busstops.find(f => f.properties.id === startBuildingId);
-    if (bs?.geometry?.coordinates)
+    if (bs?.geometry?.coordinates) {
       startCoords.push(bs.geometry.coordinates);
+    }
   }
 
-  // 终点是建筑
-  if (endBuildingId && metadata && metadata[endBuildingId]) {
+  else if (metadata[startBuildingId]) {
+    const startEntrances = getBuildingEntrances(startBuildingId, entrances, metadata);
+    startCoords.push(...startEntrances);
+  }
+
+
+
+
+  if (typeof endBuildingId === "string" && endBuildingId.startsWith("bus_")) {
+    const bs = busstops.find(f => f.properties.id === endBuildingId);
+    if (bs?.geometry?.coordinates) {
+      endCoords.push(bs.geometry.coordinates);
+    }
+  }
+
+  else if (metadata[endBuildingId]) {
     const endEntrances = getBuildingEntrances(endBuildingId, entrances, metadata);
     endCoords.push(...endEntrances);
   }
 
-  else if (typeof endBuildingId === 'string' && endBuildingId.startsWith("bus_")) {
-    const bs = busstops.find(f => f.properties.id === startBuildingId);
-    if (bs?.geometry?.coordinates)
-      startCoords.push(bs.geometry.coordinates);
-  }
 
-  if (startCoords.length === 0 || endCoords.length === 0) {
-    return null;
+    if (startCoords.length === 0 || endCoords.length === 0) {
+      return null;
   }
 
 
@@ -84,6 +88,12 @@ export function findRoute({startBuildingId, endBuildingId,  entrances,  highways
     return null;
   }
 
+  if (startCoords.length === 0 || endCoords.length === 0) {
+  console.warn("No coords for start or end:", startCoords, endCoords);
+  return null;
+}
+
+
   const passedPoints = [];
   const tolerance = 0.00003;
 
@@ -95,7 +105,7 @@ export function findRoute({startBuildingId, endBuildingId,  entrances,  highways
   }
   
 
-  // ⚙️ 5️⃣ 输出结构
+
   return {
     start_building: startBuildingId,
     end_building: endBuildingId,

@@ -85,7 +85,7 @@ const InputRow = styled.div`
   transition: border-radius 0.15s ease;
 `;
 
-export default function RouteSearchBar({ onSelectBuilding, placeholder}) {
+export default function RouteSearchBar({ onSelectBuilding, placeholder, disabledBuilding, onFocus, onBlur }) {
   const metadata = useBuildingMetadata();
 
   const {buildings, loading: building_loading} = useBuildingGeoJSONData();
@@ -130,7 +130,7 @@ export default function RouteSearchBar({ onSelectBuilding, placeholder}) {
   return (
     <Form onSubmit={(e) => e.preventDefault()}>
       <InputRow hasSuggestions={suggestions.length > 0}>
-        <Input type="text" placeholder={placeholder || "Search on campus..."} value={query} onChange={handleChange}/>
+        <Input type="text" placeholder={placeholder || "Search on campus..."} value={query} onChange={handleChange} onFocus={onFocus} onBlur={onBlur}/>
         <Button type="submit">
           <MagnifyingGlassIcon style={{width: '20px', height: '20px'}} />
         </Button>
@@ -140,19 +140,42 @@ export default function RouteSearchBar({ onSelectBuilding, placeholder}) {
         <SuggestionBox>
           {suggestions.map((s, i) => {
             const acronym = metadata[s.properties.building_id]?.acronym;
-            return(
-            <SuggestionItem key={i} onClick={() => handleSelect(s)}>
-              {s.properties.name}
-              {acronym && (
-                <span style={{ color: "#a07707ff", marginLeft: "8px"}}>
-                  ({acronym})
-                </span>
-              )}
+
+            // ⛔ Disable duplicate building
+            const isDisabled = disabledBuilding?.properties?.building_id &&
+                   s.properties?.building_id &&
+                   s.properties.building_id === disabledBuilding.properties.building_id;
+
+
+            return (
+              <SuggestionItem
+                key={i}
+                onClick={() => !isDisabled && handleSelect(s)}
+                style={{
+                    opacity: isDisabled ? 0.4 : 1,
+                    pointerEvents: isDisabled ? "none" : "auto",
+                }}
+            >
+                {s.properties.name}
+                {metadata[s.properties.building_id]?.acronym && (
+                    <span style={{ color: "#a07707ff", marginLeft: "8px" }}>
+                        ({metadata[s.properties.building_id].acronym})
+                    </span>
+                )}
+
+                {isDisabled && (
+                    <span style={{ marginLeft: "8px", color: "red" }}>
+                        (already selected)
+                    </span>
+                )}
             </SuggestionItem>
+
             );
           })}
         </SuggestionBox>
       )}
+
+
     </Form>
   );
 }
