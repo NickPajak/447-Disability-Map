@@ -164,7 +164,7 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
       const isAdded = addedIds.includes(buildingId);
       
 
-      const isLot = buildingId.startsWith("lot");
+      const isLot = buildingId.startsWith("lot") || buildingId.startsWith("p");
       const markerIcon = isLot ? greyIcon: L.Icon.Default.prototype;
 
       return (
