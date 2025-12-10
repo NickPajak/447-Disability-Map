@@ -293,7 +293,7 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
           >
             <Popup>
               <p>{(feature?.properties && feature.properties.name)  || "entrance"}</p>
-              <p>Level: {(feature?.properties && feature.properties.level) || 'elevator'}</p>
+              <p>Level: {feature?.properties?.level !== undefined ? feature.properties.level : "N/A"} </p>
             </Popup>
           </CircleMarker>
         );
