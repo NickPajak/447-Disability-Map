@@ -11,6 +11,7 @@ import iconUrl from "leaflet/dist/images/marker-icon.png";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 
+
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
@@ -37,6 +38,26 @@ const darkTileLayer = {
   url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
   attribution: '&copy; <a href="https://www.carto.com/">CARTO</a> contributors &copy; OpenStreetMap'
 };
+
+//Bus stop Marker Icon
+var orangeIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+//Lot Marker Icon
+var greyIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-grey.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
 // Compute building center
 function getFeatureCenter(feature){
@@ -116,7 +137,7 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
 
   const highwayStyle = { color: '#fdac153d', weight: 3, opacity: 0.9 };
   const busstopStyle = { radius: 6, fillColor: '#fdb515', color: '#000', weight: 1, opacity: 1, fillOpacity: 0.9 };
-  const passedPointStyle = { radius: 4, fillColor: '#000000', color: '#000000', weight: 1, opacity: 1, fillOpacity: 1 };
+  const passedPointStyle = { radius: 5, fillColor: '#000000', color: '#000000', weight: 1, opacity: 1, fillOpacity: 1 };
 
   // Handle adding feature with temporary button feedback
   const handleAddFeature = (feature) => {
@@ -141,9 +162,13 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
       const imgHtml = info.image || `/assets/${buildingId}.jpg` || `/assets/default.jpg`;
 
       const isAdded = addedIds.includes(buildingId);
+      
+
+      const isLot = buildingId.startsWith("lot") || buildingId.startsWith("p");
+      const markerIcon = isLot ? greyIcon: L.Icon.Default.prototype;
 
       return (
-        <Marker key={index} position={center}>
+        <Marker key={index} position={center} icon= {markerIcon}>
           <Popup maxWidth={260}>
             <div style={{ width: "240px", textAlign: "left" }}>
               <h3>{name}</h3>
@@ -193,7 +218,7 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
     const isAdded = addedIds.includes(id);
 
     return (
-      <Marker key={index} position={center}>
+      <Marker key={index} position={center} icon={orangeIcon}>
         <Popup maxWidth={220}>
           <h3>Bus Stop: {name}</h3>
           <button
@@ -271,7 +296,7 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
           >
             <Popup>
               <p>{(feature?.properties && feature.properties.name)  || "entrance"}</p>
-              <p>Level: {(feature?.properties && feature.properties.level) || 'elevator'}</p>
+              <p>Level: {feature?.properties?.level !== undefined ? feature.properties.level : "N/A"} </p>
             </Popup>
           </CircleMarker>
         );
