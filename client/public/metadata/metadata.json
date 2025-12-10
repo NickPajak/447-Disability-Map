@@ -4,7 +4,7 @@
     "acronym": "ADMIN",
     "floorplans-available": false,
     "image": "/assets/bldg_02.jpg",
-    "description": "",
+    "description": "Houses core administrative and student services offices. For more info, visit <a href=\"https://adminfinance.umbc.edu\" target=\"_blank\">UMBC Admin & Finance</a>.",
     "entrances": [
       "e_112",
       "e_113"
@@ -97,7 +97,7 @@
     "acronym": "",
     "floorplans-available": false,
     "image": "/assets/bldg_13.jpg",
-    "description": "",
+    "description": "The main student hub, offering dining, study areas, meeting rooms, and offices for student organizations. For more info, visit <a href=\"https://thecommons.umbc.edu\" target=\"_blank\">The Commons</a>.",
     "entrances": [
       "e_015",
       "e_016",
@@ -112,7 +112,7 @@
     "acronym": "ENGR",
     "floorplans-available": false,
     "image": "/assets/bldg_14.jpg",
-    "description": "Houses the Department of Chemical, Biochemical, & Environmental Engineering, and the Department of Mechanical Engineering.",
+    "description": "Houses the Department of Chemical, Biochemical, & Environmental Engineering, and the Department of Mechanical Engineering.For more info, visit <a href=\"https://coeit.umbc.edu/cbee-dept/\" target=\"_blank\">Department of Chemical, Biochemical and Environmental Engineering</a>.",
     "entrances": [
       "e_035",
       "e_036",
@@ -137,7 +137,7 @@
     "acronym": "FA",
     "floorplans-available": false,
     "image": "/assets/bldg_16.jpg",
-    "description": "Houses lots of creative facilities such as the Production Center, Open Studios, Study and Work Areas, and Hallway Galleries. ",
+    "description": "Houses lots of creative facilities such as the Production Center, Open Studios, Study and Work Areas, and Hallway Galleries. For more info, visit <a href=\"https://art.umbc.edu/visual-arts-at-umbc/facilities/\" target=\"_blank\">Department of Visual Arts</a>.",
     "entrances": [
       "e_032",
       "e_033",
@@ -158,7 +158,7 @@
     "acronym": "ITE",
     "floorplans-available": false,
     "image": "/assets/bldg_18.jpg",
-    "description": "Along with housing the Department of Computer Science & Electrical Engineering, and the Department of Information Systems, the ITE building is also where the COEIT Dean's Offices, Engineering and Computing Education Program (ECEP), Undergraduate Student Services, and the Center for Women in Technology is located.",
+    "description": "Along with housing the Department of Computer Science & Electrical Engineering, and the Department of Information Systems, the ITE building is also where the COEIT Dean's Offices, Engineering and Computing Education Program (ECEP), Undergraduate Student Services, and the Center for Women in Technology is located. For more info, visit <a href=\"https://coeit.umbc.edu\" target=\"_blank\">College of Engineering and Information Technology</a>.",
     "entrances": [
       "e_019",
       "e_039",
@@ -171,7 +171,7 @@
     "acronym": "LIBR",
     "floorplans-available": false,
     "image": "/assets/bldg_20.jpg",
-    "description": "",
+    "description": "This is the main campus library, providing books, digital resources, and study spaces. For more info, visit <a href=\"https://library.umbc.edu\" target=\"_blank\">Albin O. Kuhn Library & Gallery</a>.",
     "entrances": [
       "e_027"
     ]
@@ -181,7 +181,7 @@
     "acronym": "MP",
     "floorplans-available": false,
     "image": "/assets/bldg_21.jpg",
-    "description": "",
+    "description": "Houses classrooms, labs, and offices for the Math and Psychology departments as well as the Accessibility and Disability Services office. For more info, visit <a href=\"https://mathstat.umbc.edu\" target=\"_blank\">Math and Statistics Department</a>, <a href=\"https://psychology.umbc.edu\" target=\"_blank\">Psychology Department</a>, or <a href=\"https://accessibility.umbc.edu\" target=\"_blank\">Office of Accessibility and Disability Services</a>.",
     "entrances": [
       "e_100",
       "e_101",
@@ -195,7 +195,7 @@
     "acronym": "MEYR",
     "floorplans-available": false,
     "image": "/assets/bldg_22.jpg",
-    "description": "In addition to chemistry classes and the Department of Chemical and Biochemistry, this building also houses the Howard Hughes Medical Institute (HHMI).",
+    "description": "In addition to chemistry classes and the Department of Chemical and Biochemistry, this building also houses the Howard Hughes Medical Institute (HHMI). For more info, visit <a href=\"https://chemistry.umbc.edu\" target=\"_blank\">Department of Chemistry & Biochemistry</a>.",
     "entrances": [
       "e_086",
       "e_087",
@@ -222,7 +222,7 @@
     "acronym": "PAHB",
     "floorplans-available": false,
     "image": "/assets/bldg_24.jpg",
-    "description": "",
+    "description": "Home to the Music, Theatre, and Dance departments. For more info, visit <a href=\"https://pahb.umbc.edu\" target=\"_blank\">Performing Arts & Humanities Building</a>.",
     "entrances": [
       "e_013",
       "e_014",
@@ -235,7 +235,7 @@
     "acronym": "PHYS",
     "floorplans-available": false,
     "image": "/assets/bldg_25.jpg",
-    "description": "",
+    "description": "Houses Physics department classrooms, offices, and laboratories. For more info, visit <a href=\"https://physics.umbc.edu\" target=\"_blank\">Department of Physics</a>.",
     "entrances": [
       "e_003",
       "e_030",
@@ -286,7 +286,7 @@
     "acronym": "SHER",
     "floorplans-available": false,
     "image": "/assets/bldg_31.jpg",
-    "description": "",
+    "description": "Currently under construction. For more info, visit <a href=\"https://fm.umbc.edu/sherman-hall-renewal/\" target=\"_blank\">Sherman Hall Renewal</a>.",
     "entrances": [
       "e_043",
       "e_044",
@@ -302,7 +302,7 @@
     "acronym": "SOND",
     "floorplans-available": false,
     "image": "/assets/bldg_32.jpg",
-    "description": "",
+    "description": "Houses classrooms and offices for various departments.",
     "entrances": [
       "e_046",
       "e_047",
@@ -350,7 +350,7 @@
     "acronym": "UC",
     "floorplans-available": false,
     "image": "/assets/bldg_37.jpg",
-    "description": "",
+    "description": "A central hub for student life, featuring dining opions, student organizing spaces, and key campus services.",
     "entrances": [
       "e_009",
       "e_052",
@@ -464,7 +464,7 @@
     "acronym": "BIOL",
     "floorplans-available": false,
     "image": "/assets/bldg_52.jpg",
-    "description": "",
+    "description": "Houses Biology department classrooms, offices, and labs. For more info, visit <a href=\"https://biology.umbc.edu\" target=\"_blank\">Department of Biological Sciences</a>.",
     "entrances": [
       "e_109",
       "e_110",
@@ -763,7 +763,7 @@
     "acronym": "ILSB",
     "floorplans-available": false,
     "image": "/assets/bldg_19.jpg",
-    "description": "",
+    "description": "Houses advanced labs, active-learning classrooms, and open spaces for interdisciplinary research and innovation. For more info, visit <a href=\"https://ilsb.umbc.edu\" target=\"_blank\">Interdisciplinary Life Sciences Building</a>.",
     "entrances": [
       "e_114",
       "e_115"

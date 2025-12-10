@@ -27,7 +27,9 @@ const PageContainer = styled.div`
 const SideBar = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100vh;
   gap: 1rem;
+  position: relative;
   background-color: ${({ theme }) => theme.routePlannerBg};
   color: white;
   transition: all 0.3s ease;
@@ -42,7 +44,7 @@ const SideBar = styled.div`
     width: 100vw;
     height: ${({ expanded }) => (expanded ? "100vh" : "0")};
     padding: ${({ expanded }) => (expanded ? "1rem" : "0")};
-    overflow: hidden;
+    overflow: auto;
     z-index: 2000;
   }
 `;
@@ -76,11 +78,11 @@ export default function MainPage({ darkMode }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [showRoute, setShowRoute] = useState(false);
 
-    useEffect(() => {
+  useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-    }, []);
+  }, []);
 
 
   const handleAddFeature = (feature) => {
@@ -95,7 +97,7 @@ export default function MainPage({ darkMode }) {
   const handleRouteRequest = (startId, endId) => {
     setRouteRequest({ startId, endId });
     setShowRoute(true);
-    if(isMobile) setIsExpanded(false);
+    if (isMobile) setIsExpanded(false);
   };
 
   return (
@@ -105,23 +107,23 @@ export default function MainPage({ darkMode }) {
       <PageContainer>
         {/* Sidebar toggle button */}
         {isMobile && (
-        <button
+          <button
             onClick={() => setIsExpanded(prev => !prev)}
             style={{
-            position: 'fixed',
-            top: '10px',
-            left: '10px',
-            background: 'black',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            padding: '4px 8px',
-            cursor: 'pointer',
-            zIndex: 2100,
+              position: 'fixed',
+              top: '10px',
+              left: '10px',
+              background: 'black',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '4px 8px',
+              cursor: 'pointer',
+              zIndex: 2100,
             }}
-        >
+          >
             {isExpanded ? '✕' : '☰'}
-        </button>
+          </button>
         )}
 
 
@@ -143,7 +145,7 @@ export default function MainPage({ darkMode }) {
             selectedFeature={selectedFeature}
             onAddFeature={handleAddFeature}
             darkMode={darkMode}
-            routeRequest={showRoute ? routeRequest: null}
+            routeRequest={showRoute ? routeRequest : null}
           />
         </MapContainer>
 
