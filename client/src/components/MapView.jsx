@@ -137,7 +137,7 @@ export default function MapView({ selectedFeature, onAddFeature, routeRequest, d
 
   const highwayStyle = { color: '#fdac153d', weight: 3, opacity: 0.9 };
   const busstopStyle = { radius: 6, fillColor: '#fdb515', color: '#000', weight: 1, opacity: 1, fillOpacity: 0.9 };
-  const passedPointStyle = { radius: 4, fillColor: '#000000', color: '#000000', weight: 1, opacity: 1, fillOpacity: 1 };
+  const passedPointStyle = { radius: 5, fillColor: '#000000', color: '#000000', weight: 1, opacity: 1, fillOpacity: 1 };
 
   // Handle adding feature with temporary button feedback
   const handleAddFeature = (feature) => {
