@@ -32,22 +32,29 @@ const PageContainer = styled.div`
 const SideBar = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100vh;
   gap: 1rem;
-  width: 440px;
-  height: 100%;
-  background-color: ${(props) => props.theme.routePlannerBg};
+  position: relative;
+  background-color: ${({ theme }) => theme.routePlannerBg};
   color: white;
-  padding: 1rem;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  transition: all 0.3s ease;
 
-  &::-webkit-scrollbar {
-    display: none;
+  /* Desktop: always visible */
+  width: 400px;
+  @media (max-width: 768px) {
+    /* Mobile: collapsed by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: ${({ expanded }) => (expanded ? "100vh" : "0")};
+    padding: ${({ expanded }) => (expanded ? "1rem" : "0")};
+    overflow: auto;
+    z-index: 2000;
   }
 `;
 
-const MapWrapper = styled.div`
+const MapContainer = styled.div`
   flex: 1;
   position: relative;
   background-color: #d9d9d9;
@@ -72,12 +79,18 @@ export default function MainPage({ darkMode }) {
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [featureToAdd, setFeatureToAdd] = useState(null);
   const [routeRequest, setRouteRequest] = useState(null);
-
-  // Temporary full-screen announcement
   const [showAnnouncement, setShowAnnouncement] = useState(true);
-
-  // Floorplan overlay controller
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [showRoute, setShowRoute] = useState(false);
   const [activeBuilding, setActiveBuilding] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
 
   const handleAddFeature = (feature) => {
     setFeatureToAdd(feature);
@@ -88,32 +101,58 @@ export default function MainPage({ darkMode }) {
 
   const handleRouteRequest = (startId, endId) => {
     setRouteRequest({ startId, endId });
+    setShowRoute(true);
+    if (isMobile) setIsExpanded(false);
   };
 
   return (
     <>
       <GlobalStyle />
       <PageContainer>
+        {/* Sidebar toggle button */}
+        {isMobile && (
+          <button
+            onClick={() => setIsExpanded(prev => !prev)}
+            style={{
+              position: 'fixed',
+              top: '10px',
+              left: '10px',
+              background: 'black',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '4px 8px',
+              cursor: 'pointer',
+              zIndex: 2100,
+            }}
+          >
+            {isExpanded ? '✕' : '☰'}
+          </button>
+        )}
 
-        {/* LEFT SIDEBAR */}
-        <SideBar>
+
+        {/* Sidebar */}
+        <SideBar expanded={isExpanded}>
           <RoutePlanner
             onSelectFeature={setSelectedFeature}
             addFeature={featureToAdd}
             onFeatureConsumed={handleFeatureConsumed}
             onRouteRequest={handleRouteRequest}
             onShowFloorplan={(building) => setActiveBuilding(building)}
+            onExpand={() => setIsExpanded(true)}
+            onCollapse={() => setIsExpanded(false)}
           />
         </SideBar>
 
         {/* RIGHT MAP + OVERLAY */}
-        <MapWrapper>
+        <MapContainer expanded={isExpanded}>
 
           {/* MAP ALWAYS MOUNTS, NEVER RELOADS */}
           <MapView
             selectedFeature={selectedFeature}
             onAddFeature={handleAddFeature}
             darkMode={darkMode}
+            // routeRequest={showRoute ? routeRequest : null}
             routeRequest={routeRequest}
             onShowFloorplan={(building) => setActiveBuilding(building)}
           />
@@ -127,7 +166,7 @@ export default function MainPage({ darkMode }) {
               />
             </FloorplanOverlay>
           )}
-        </MapWrapper>
+        </MapContainer>
 
         {/* ANNOUNCEMENT MODAL */}
         {showAnnouncement && (

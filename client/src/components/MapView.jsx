@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap, Polyline } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, Marker, Popup, useMap, Polyline, CircleMarker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import styled from "styled-components";
 import L from 'leaflet';
@@ -41,27 +41,27 @@ const darkTileLayer = {
 };
 
 // Compute building center
-function getFeatureCenter(feature){
-    if (!feature.geometry) return null;
+function getFeatureCenter(feature) {
+  if (!feature.geometry) return null;
 
-    let lat, lng;
-    if (feature.geometry.type === "Point") {
-        [lng, lat] = feature.geometry.coordinates;
-    } else if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
-        const coords = feature.geometry.type === "Polygon"
-            ? feature.geometry.coordinates[0]
-            : feature.geometry.coordinates[0][0];
-        const lats = coords.map(c => c[1]);
-        const lngs = coords.map(c => c[0]);
-        lat = (Math.min(...lats) + Math.max(...lats)) / 2;
-        lng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
-    } else return null;
+  let lat, lng;
+  if (feature.geometry.type === "Point") {
+    [lng, lat] = feature.geometry.coordinates;
+  } else if (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon") {
+    const coords = feature.geometry.type === "Polygon"
+      ? feature.geometry.coordinates[0]
+      : feature.geometry.coordinates[0][0];
+    const lats = coords.map(c => c[1]);
+    const lngs = coords.map(c => c[0]);
+    lat = (Math.min(...lats) + Math.max(...lats)) / 2;
+    lng = (Math.min(...lngs) + Math.max(...lngs)) / 2;
+  } else return null;
 
-    return [lat, lng];
+  return [lat, lng];
 }
 
 // Zoom to feature
-function ZoomFeature({feature}) {
+function ZoomFeature({ feature }) {
   const map = useMap();
   useEffect(() => {
     if (!feature) return;
@@ -74,7 +74,7 @@ function ZoomFeature({feature}) {
 const hiddenTypes = ["bridge", "deck", "Loading Dock"];
 
 
-export default function MapView({ selectedFeature, onAddFeature,routeRequest ,darkMode, geoJsonData, center = defaultCenter, zoom = 17, onShowFloorplan }) {
+export default function MapView({ selectedFeature, onAddFeature, routeRequest, darkMode, geoJsonData, center = defaultCenter, zoom = 17, onShowFloorplan }) {
   //Load geoJsonData 
   const { buildings, loading: buildingsLoading } = useBuildingGeoJSONData();
   const { busstops, loading: busstopsLoading } = useBusStopGeoJSONData();
@@ -103,7 +103,7 @@ export default function MapView({ selectedFeature, onAddFeature,routeRequest ,da
       busstops: busstopFC.features || busstops,
       metadata: metadata
     });
-
+    console.debug('MapView routing result', result);
     setRoute(result);
   }, [routeRequest, highways, entrances, busstops, metadata]);
 
@@ -120,6 +120,7 @@ export default function MapView({ selectedFeature, onAddFeature,routeRequest ,da
 
   const highwayStyle = { color: '#fdac153d', weight: 3, opacity: 0.9 };
   const busstopStyle = { radius: 6, fillColor: '#fdb515', color: '#000', weight: 1, opacity: 1, fillOpacity: 0.9 };
+  const passedPointStyle = { radius: 4, fillColor: '#000000', color: '#000000', weight: 1, opacity: 1, fillOpacity: 1 };
 
   // Handle adding feature with temporary button feedback
   const handleAddFeature = (feature) => {
@@ -132,83 +133,90 @@ export default function MapView({ selectedFeature, onAddFeature,routeRequest ,da
 
   // Markers
   const buildingMarkers = buildings
-        //hide mis buildings
-      .filter((feature)=> {
-        const name = feature.properties.name?.toLowerCase() || "";
-        return !(hiddenTypes.includes(name));
-      })
-      //show marker
-      .map((feature, index) => {
-        const center = getFeatureCenter(feature);
-        if (!center) return null;
+    //hide mis buildings
+    .filter((feature) => {
+      const name = feature.properties.name?.toLowerCase() || "";
+      return !(hiddenTypes.includes(name));
+    })
+    //show marker
+    .map((feature, index) => {
+      const center = getFeatureCenter(feature);
+      if (!center) return null;
 
-        const name = feature.properties.name || "building";
-        const buildingId = feature.properties.building_id;
-        const info = metadata[buildingId] || {};
-        const desc = info.description || "No description available.";
-        const defaultImage = "/assets/default.jpg";
-        const imgHtml = info.image || `/assets/${buildingId}.jpg` || `/assets/default.jpg`;
+      const name = feature.properties.name || "building";
+      const buildingId = feature.properties.building_id;
+      const info = metadata[buildingId] || {};
+      const desc = info.description || "No description available.";
+      const defaultImage = "/assets/default.jpg";
+      const imgHtml = info.image
+        ? `${basePath}${info.image}`
+        : `${basePath}/assets/${buildingId}.jpg`;
+      // console.log("imgHtml:", imgHtml);
 
-        return(
-          <Marker key={index} position={center}>
-            <Popup maxWidth= {260}>
-              <div style={{width: "240px", textAlign: "left"}}>
-                <h3>{name}</h3>
-                <img
-                  src={imgHtml}
-                  alt={name}
-                  style={{
-                    width : "100%",
-                    height: "auto",
-                    maxHeight: "120px", 
-                    objectFit: "cover", borderRadius: "4px" }}
-                  onError={(event) => {
-                    event.currentTarget.onerror = null;
-                    event.currentTarget.src = defaultImage;
-                  }}
-                />
-                <p style={{ marginTop: "8px" }}>{desc}</p>
-                <button
-                    onClick={() => onAddFeature(feature)}
-                      style={{
-                        marginTop: "8px",
-                        padding: "6px 12px",
-                        backgroundColor:" #6c757d",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                      }}
-                      
-                >
-                  + ADD
-                </button>
+      const isAdded = addedIds.includes(buildingId);
 
-                <button
-                    onClick={() => onShowFloorplan(feature)}
-                    style={{
-                      marginTop: "8px",
-                      marginLeft: "8px",
-                      padding: "6px 12px",
-                      backgroundColor:" #6c757d",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer"
-                    }}
-                >
-                  View Floorplan
-                </button>
+      return (
+        <Marker key={index} position={center}>
+          <Popup maxWidth={260}>
+            <div style={{ width: "240px", textAlign: "left" }}>
+              <h3>{name}</h3>
+              <img
+                src={imgHtml}
+                alt={name}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  maxHeight: "120px",
+                  objectFit: "cover",
+                  borderRadius: "4px"
+                }}
+                onError={(e) => {
+                  console.log("FALLBACK FIRING, SETTING DEFAULT IMAGE");
+                  e.currentTarget.src = `${basePath}/assets/default.jpg`;
+                }}
+              />
+              <p
+                style={{ marginTop: "8px" }}
+                dangerouslySetInnerHTML={{ __html: desc }}
+              />
+              <button
+                onClick={() => handleAddFeature(feature)}
+                style={{
+                  marginTop: "8px",
+                  padding: "6px 12px",
+                  backgroundColor: isAdded ? "#28a745" : "#6c757d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  transition: "background-color 0.3s ease"
+                }}
+              >
+                {isAdded ? "✓ Added" : "+ ADD"}
+              </button>
 
-              </div>
-            </Popup>
-          </Marker>
-        )
-      })
-  
-    // Bus Marker
-  const busStopMarkers = busstops
-    .map ((feature, index) => {
+              <button
+                onClick={() => onShowFloorplan(feature)}
+                style={{
+                  marginTop: "8px",
+                  marginLeft: "8px",
+                  padding: "6px 12px",
+                  backgroundColor: " #6c757d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer"
+                }}
+              >
+                View Floorplan
+              </button>
+            </div>
+          </Popup>
+        </Marker>
+      );
+    });
+
+  const busStopMarkers = busstops.map((feature, index) => {
     const center = getFeatureCenter(feature);
     if (!center) return null;
 
@@ -241,7 +249,7 @@ export default function MapView({ selectedFeature, onAddFeature,routeRequest ,da
   });
 
   return (
-    <MapContainerStyled center={center} zoom={zoom} scrollWheelZoom={true}>
+    <MapContainerStyled center={center} zoom={zoom} scrollWheelZoom={true} minZoom={16} >
       <TileLayer
         url={darkMode ? darkTileLayer.url : lightTileLayer.url}
         attribution={darkMode ? darkTileLayer.attribution : lightTileLayer.attribution}
@@ -272,8 +280,34 @@ export default function MapView({ selectedFeature, onAddFeature,routeRequest ,da
           weight={5}
         />
       )}
+
+      {route?.passedPoints && route.passedPoints.map((feature, index) => {
+        const pos = getFeatureCenter(feature)
+          || (feature && feature.geometry && feature.geometry.coordinates
+            ? [feature.geometry.coordinates[1], feature.geometry.coordinates[0]]
+            : (Array.isArray(feature) ? [feature[1], feature[0]] : null));
+        if (!pos) return null;
+
+        return (
+          <CircleMarker
+            key={`passed-${index}`}
+            center={pos}
+            pathOptions={{
+              color: passedPointStyle.color,
+              fillColor: passedPointStyle.fillColor,
+              fillOpacity: passedPointStyle.fillOpacity,
+              opacity: passedPointStyle.opacity,
+              weight: passedPointStyle.weight,
+            }}
+            radius={passedPointStyle.radius}
+          >
+            <Popup>
+              <p>{(feature?.properties && feature.properties.name) || "entrance"}</p>
+              <p>Level: {(feature?.properties && feature.properties.level) || 'elevator'}</p>
+            </Popup>
+          </CircleMarker>
+        );
+      })}
     </MapContainerStyled>
   );
-
-
 }

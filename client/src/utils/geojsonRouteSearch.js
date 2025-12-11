@@ -19,7 +19,7 @@ function getBuildingEntrances(buildingId, entrance, metadata) {
 }
 
 
-export function findRoute({startBuildingId, endBuildingId,  entrances,  highways,  busstops,  metadata}) {
+export function findRoute({ startBuildingId, endBuildingId, entrances, highways, busstops, metadata }) {
 
   const validHighwayFeatures = highways.features.filter(f => {
     const s = f && f.properties && f.properties.status;
@@ -62,8 +62,8 @@ export function findRoute({startBuildingId, endBuildingId,  entrances,  highways
   }
 
 
-    if (startCoords.length === 0 || endCoords.length === 0) {
-      return null;
+  if (startCoords.length === 0 || endCoords.length === 0) {
+    return null;
   }
 
 
@@ -89,9 +89,9 @@ export function findRoute({startBuildingId, endBuildingId,  entrances,  highways
   }
 
   if (startCoords.length === 0 || endCoords.length === 0) {
-  console.warn("No coords for start or end:", startCoords, endCoords);
-  return null;
-}
+    console.warn("No coords for start or end:", startCoords, endCoords);
+    return null;
+  }
 
 
   const passedPoints = [];
@@ -99,11 +99,20 @@ export function findRoute({startBuildingId, endBuildingId,  entrances,  highways
 
   function isPointPassed(point) {
     const [lng, lat] = point;
-    return bestPath.path.some(
-      ([x, y]) => Math.abs(x - lng) < tolerance && Math.abs(y - lat) < tolerance
-    );
+    return bestPath.path.some(([x, y]) => Math.abs(x - lng) < tolerance && Math.abs(y - lat) < tolerance);
   }
-  
+
+  // Ensure we iterate safely whether entrances is a FeatureCollection or an array
+  const entranceFeatures = (entrances && entrances.features) ? entrances.features : (entrances || []);
+  entranceFeatures.forEach((entrance) => {
+    if (!entrance || !entrance.geometry) return;
+    const coords = entrance.geometry.coordinates;
+    if (coords && isPointPassed(coords)) {
+      passedPoints.push(entrance);
+    }
+  });
+
+  console.debug('findRoute: computed passedPoints', { count: passedPoints.length, passedPoints });
 
 
   return {
@@ -112,7 +121,7 @@ export function findRoute({startBuildingId, endBuildingId,  entrances,  highways
     route_coords: bestPath.path,
     start_point: usedStart,
     end_point: usedEnd,
-    passed_Points: passedPoints,
+    passedPoints: passedPoints,
     total_distance: bestPath.weight
   };
 }
@@ -131,15 +140,15 @@ export function fixLooseConnections(geojson, tolerance = 3) {
 
     if (geomType === "MultiLineString") {
       const firstLine = f.geometry.coordinates[0];
-      const lastLine  = f.geometry.coordinates[f.geometry.coordinates.length - 1];
+      const lastLine = f.geometry.coordinates[f.geometry.coordinates.length - 1];
       start = firstLine[0];
-      end   = lastLine[lastLine.length - 1];
+      end = lastLine[lastLine.length - 1];
     }
 
     if (geomType === "LineString") {
       const coords = f.geometry.coordinates;
       start = coords[0];
-      end   = coords[coords.length - 1];
+      end = coords[coords.length - 1];
     }
 
     endpoints.push({ pt: start, featureIndex: i, coordIndex: 0 });

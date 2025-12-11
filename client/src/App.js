@@ -1,9 +1,9 @@
 // main app component
-import {React, useState} from 'react';
+import { React, useState } from 'react';
 import MainPage from './pages/MainPage';
 import HelpButton from './components/HelpButton';
-import {styled, ThemeProvider} from 'styled-components';
-import {lightTheme, darkTheme} from './styles/theme';
+import { styled, ThemeProvider } from 'styled-components';
+import { lightTheme, darkTheme } from './styles/theme';
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
@@ -68,24 +68,25 @@ const ContentWrapper = styled.div`
   margin: 0;
 `;
 
+const basePath = process.env.PUBLIC_URL || "";
 
 function App() {
-    const [darkMode, setDarkMode] = useState(false);
-    const toggleDarkMode = () => setDarkMode(prev => !prev);
-    return (
-      <ThemeProvider theme={darkMode ? darkTheme: lightTheme}>
-        <GlobalStyle />
-        <AppContainer>
-          <TopRightImage src="assets/LOGO.png" alt="Logo" />
+  const [darkMode, setDarkMode] = useState(false);
+  const toggleDarkMode = () => setDarkMode(prev => !prev);
+  return (
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      <GlobalStyle />
+      <AppContainer>
+        <TopRightImage src={`${basePath}/assets/LOGO.png`} alt="Logo" />
 
-          <ContentWrapper>
-            <MainPage darkMode={darkMode}/>
-            <HelpButton darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-          </ContentWrapper>
-        </AppContainer>
-      </ThemeProvider>
-    
-    );
+        <ContentWrapper>
+          <MainPage darkMode={darkMode} />
+          <HelpButton darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        </ContentWrapper>
+      </AppContainer>
+    </ThemeProvider>
+
+  );
 }
 
 export default App;
